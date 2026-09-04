@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MC基岩版站点</title>
+    <title>MC玩家工具站点</title>
     <style>
         *{
             margin:0;
@@ -37,7 +37,7 @@
             top:0;
             left:0;
             z-index:998;
-            padding:15px 20px;
+            padding:10px 20px;
             background:rgba(255,255,255,0.22);
             backdrop-filter:blur(16px);
             -webkit-backdrop-filter:blur(16px);
@@ -223,7 +223,7 @@
     <!--顶部导航栏：抖音、查看图片 在登录左边，纯文字无背景+悬停效果-->
     <div class="top-nav">
         <button class="text-nav-btn" onclick="openDouyinModal()">作者抖音</button>
-        <button class="text-nav-btn" onclick="openImageModal()">查看图片</button>
+        <button class="text-nav-btn" onclick="openImageModal()">九柱</button>
         <a href="login.html" class="nav-btn">登录</a>
     </div>
 
@@ -303,7 +303,7 @@
     <!--图片弹窗 p1.png-->
     <div class="modal" id="imageModal">
         <div class="modal-box">
-            <img src="p1.png" alt="图片" class="img-popup">
+            <img src="p1.png" alt="九柱" class="img-popup">
             <button class="close-btn" onclick="closeImageModal()">关闭</button>
         </div>
     </div>

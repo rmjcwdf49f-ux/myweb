@@ -30,16 +30,27 @@
             background:rgba(255,255,255,0.15);
             z-index:-1;
         }
+        /* 顶部毛玻璃导航栏 */
+        .top-nav{
+            width:100%;
+            position:fixed;
+            top:0;
+            left:0;
+            z-index:998;
+            padding:15px 20px;
+            background:rgba(255,255,255,0.22);
+            backdrop-filter:blur(16px);
+            -webkit-backdrop-filter:blur(16px);
+            display:flex;
+            justify-content:flex-end;
+            gap:24px;
+            flex-wrap: wrap;
+            align-items:center;
+        }
         .container{
             max-width:600px;
-            margin:0 auto;
+            margin:80px auto 0;
             padding:40px 20px;
-        }
-        /* 右上角登录按钮 */
-        .login-top{
-            position:absolute;
-            top:20px;
-            right:20px;
         }
         /* 顶部大标题图片 */
         .title-img{
@@ -71,11 +82,53 @@
             background-clip:padding-box,border-box;
             transition:0.3s ease;
             box-shadow:0 8px 20px rgba(0,0,0,0.08);
+            cursor:pointer;
         }
         .btn:hover{
             background:rgba(255,255,255,0.45);
             transform:translateY(-2px);
             box-shadow:0 12px 28px rgba(37,99,235,0.15);
+        }
+        /* 禁用按钮样式 停服按钮 */
+        .btn-disabled{
+            pointer-events:none;
+            opacity:0.4;
+        }
+        /*导航文字按钮：无背景无边框 默认状态*/
+        .text-nav-btn{
+            background:transparent;
+            border:none;
+            font-size:17px;
+            color:#111827;
+            cursor:pointer;
+            text-decoration: none;
+            transition: 0.2s ease;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+        /* 悬停动画效果 */
+        .text-nav-btn:hover{
+            color:#2563eb;
+            text-decoration: none;
+            transform: translateY(-2px);
+            background:rgba(37,99,235,0.12);
+            box-shadow:0 4px 12px rgba(37,99,235,0.15);
+        }
+        /* 登录按钮（保留原来毛玻璃样式） */
+        .nav-btn{
+            padding:8px 18px;
+            text-decoration:none;
+            color:#111827;
+            border-radius:12px;
+            background:rgba(255,255,255,0.28);
+            backdrop-filter:blur(18px);
+            -webkit-backdrop-filter:blur(18px);
+            border:2px solid transparent;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.28),rgba(255,255,255,0.28)),
+                linear-gradient(90deg,#2563eb,#9333ea);
+            background-origin:border-box;
+            background-clip:padding-box,border-box;
         }
         /* 回到顶部 */
         #backTop{
@@ -123,7 +176,7 @@
                 linear-gradient(90deg,#2563eb,#9333ea);
             background-origin:border-box;
             background-clip:padding-box,border-box;
-            max-width:400px;
+            max-width:500px;
             width:90%;
             transform:scale(0.7);
             opacity:0;
@@ -149,6 +202,16 @@
             color:#111827;
             cursor:pointer;
         }
+        .color-item{
+            padding:4px 6px;
+            margin:3px 2px;
+            display:inline-block;
+            border-radius:6px;
+        }
+        .img-popup{
+            width:100%;
+            border-radius:12px;
+        }
     </style>
 </head>
 <body>
@@ -157,8 +220,11 @@
     </video>
     <div class="overlay"></div>
 
-    <div class="login-top">
-        <a href="login.html" class="btn">登录</a>
+    <!--顶部导航栏：抖音、查看图片 在登录左边，纯文字无背景+悬停效果-->
+    <div class="top-nav">
+        <button class="text-nav-btn" onclick="openDouyinModal()">作者抖音</button>
+        <button class="text-nav-btn" onclick="openImageModal()">查看图片</button>
+        <a href="login.html" class="nav-btn">登录</a>
     </div>
 
     <div class="container">
@@ -166,24 +232,91 @@
 
         <a href="https://mcrac.top" class="btn">安卓版mc基岩版下载</a>
         <a href="https://www.mcappx.com" class="btn">windows mc基岩版下载</a>
-        <button class="btn" onclick="openServerModal()">加入我的mc基岩版服务器</button>
+        <button class="btn btn-disabled">加入我的mc基岩版服务器（停服）</button>
+        <button class="btn" onclick="openJavaServerModal()">MC Java版服务器</button>
         <a href="Eaglercraft 1.16.5 (u2-beta).html" class="btn">mc网页版1.16.5</a>
         <a href="https://www.chunkbase.com" class="btn">种子码查询</a>
         <a href="https://zh.minecraft.wiki/" class="btn">Minecraft维基百科</a>
         <a href="https://www.minecrafttoolkit.com/calculators/enchantment" class="btn">附魔计算器</a>
         <a href="#" class="btn">服务器状态查询</a>
         <a href="https://yzbwdlt.pages.dev/docs/docs/commands/all_commands/" class="btn">游戏指令速查表</a>
+        <button class="btn" onclick="openColorModal()">颜色代码表</button>
+        <button class="btn" onclick="openRareVerModal()">我的世界稀有版本</button>
         <button class="btn" onclick="openAboutModal()">关于</button>
     </div>
 
-    <!--服务器弹窗-->
-    <div class="modal" id="serverModal">
+    <!--Java服务器弹窗-->
+    <div class="modal" id="javaServerModal">
         <div class="modal-box">
-            <h3>服务器信息</h3>
-            <p style="margin:15px 0">地址:cn‑hk‑bgp‑4.ofalias.net<br>端口：33276</p>
-            <a href="minecraft://?addExternalServer&name=我的服务器&address=cn-hk-bgp-4.ofalias.net&port=33276" class="close-btn">点击加入服务器</a>
+            <h3>Java版服务器信息</h3>
+            <p style="margin:15px 0;font-size:17px;">地址：cn‑hk1.mfrp.space:64032</p>
+            <button class="close-btn" onclick="copyJavaAddr()">复制服务器地址</button>
             <br>
-            <button class="close-btn" onclick="closeServerModal()">关闭</button>
+            <button class="close-btn" onclick="closeJavaServerModal()">关闭</button>
+        </div>
+    </div>
+
+    <!--颜色代码弹窗-->
+    <div class="modal" id="colorModal">
+        <div class="modal-box">
+            <h3>MC颜色代码表</h3>
+            <div style="margin:16px 0;line-height:2;">
+                <span class="color-item" style="color:#000000">§0 黑色</span>
+                <span class="color-item" style="color:#0000AA">§1 深蓝色</span>
+                <span class="color-item" style="color:#00AA00">§2 深绿色</span>
+                <span class="color-item" style="color:#00AAAA">§3 深青色</span>
+                <span class="color-item" style="color:#AA0000">§4 深红色</span>
+                <span class="color-item" style="color:#AA00AA">§5 紫色</span>
+                <span class="color-item" style="color:#FFAA00">§6 金色</span>
+                <span class="color-item" style="color:#AAAAAA">§7 浅灰</span>
+                <span class="color-item" style="color:#555555">§8 深灰</span>
+                <span class="color-item" style="color:#5555FF">§9 蓝色</span>
+                <span class="color-item" style="color:#55FF55">§a 亮绿</span>
+                <span class="color-item" style="color:#55FFFF">§b 青色</span>
+                <span class="color-item" style="color:#FF5555">§c 红色</span>
+                <span class="color-item" style="color:#FF55FF">§d 粉色</span>
+                <span class="color-item" style="color:#FFFF55">§e 黄色</span>
+                <span class="color-item" style="color:#FFFFFF;background:#333">§f 白色</span>
+                <br>
+                <span class="color-item">§k 乱码</span>
+                <span class="color-item">§l 粗体</span>
+                <span class="color-item">§m 删除线</span>
+                <span class="color-item">§n 下划线</span>
+                <span class="color-item">§o 斜体</span>
+                <span class="color-item">§r 重置格式</span>
+            </div>
+            <button class="close-btn" onclick="closeColorModal()">关闭</button>
+        </div>
+    </div>
+
+    <!--抖音弹窗-->
+    <div class="modal" id="douyinModal">
+        <div class="modal-box">
+            <h3>作者抖音</h3>
+            <p style="margin:15px 0;font-size:17px;">抖音号：21107870869</p>
+            <button class="close-btn" onclick="copyDouyin()">复制抖音号</button>
+            <br>
+            <button class="close-btn" onclick="closeDouyinModal()">关闭</button>
+        </div>
+    </div>
+
+    <!--图片弹窗 p1.png-->
+    <div class="modal" id="imageModal">
+        <div class="modal-box">
+            <img src="p1.png" alt="图片" class="img-popup">
+            <button class="close-btn" onclick="closeImageModal()">关闭</button>
+        </div>
+    </div>
+
+    <!--稀有版本弹窗-->
+    <div class="modal" id="rareVerModal">
+        <div class="modal-box">
+            <h3>我的世界稀有版本</h3>
+            <div style="margin:18px 0;">
+                <a href="https://1835013311.share.123pan.cn/123pan/LbsoTd-gTewd?pwd=sC6M#" target="_blank" class="close-btn">我的世界传奇开发版本</a>
+                <p style="margin-top:20px;text-align:center;">更多版本敬请期待</p>
+            </div>
+            <button class="close-btn" onclick="closeRareVerModal()">关闭</button>
         </div>
     </div>
 
@@ -199,16 +332,70 @@
     <button id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
     <script>
-        function openServerModal(){
-            const m=document.getElementById('serverModal');
+        // Java服务器弹窗
+        function openJavaServerModal(){
+            const m=document.getElementById('javaServerModal');
             m.style.display='flex';
             setTimeout(()=>m.classList.add('show'),10);
         }
-        function closeServerModal(){
-            const m=document.getElementById('serverModal');
+        function closeJavaServerModal(){
+            const m=document.getElementById('javaServerModal');
             m.classList.remove('show');
             setTimeout(()=>m.style.display='none',300);
         }
+        function copyJavaAddr(){
+            navigator.clipboard.writeText("cn‑hk1.mfrp.space:64032");
+            alert("服务器地址已复制！");
+        }
+        //颜色代码弹窗
+        function openColorModal(){
+            const m=document.getElementById('colorModal');
+            m.style.display='flex';
+            setTimeout(()=>m.classList.add('show'),10);
+        }
+        function closeColorModal(){
+            const m=document.getElementById('colorModal');
+            m.classList.remove('show');
+            setTimeout(()=>m.style.display='none',300);
+        }
+        //抖音弹窗
+        function openDouyinModal(){
+            const m=document.getElementById('douyinModal');
+            m.style.display='flex';
+            setTimeout(()=>m.classList.add('show'),10);
+        }
+        function closeDouyinModal(){
+            const m=document.getElementById('douyinModal');
+            m.classList.remove('show');
+            setTimeout(()=>m.style.display='none',300);
+        }
+        function copyDouyin(){
+            navigator.clipboard.writeText("21107870869");
+            alert("抖音号已复制！");
+        }
+        //图片弹窗
+        function openImageModal(){
+            const m=document.getElementById('imageModal');
+            m.style.display='flex';
+            setTimeout(()=>m.classList.add('show'),10);
+        }
+        function closeImageModal(){
+            const m=document.getElementById('imageModal');
+            m.classList.remove('show');
+            setTimeout(()=>m.style.display='none',300);
+        }
+        //稀有版本弹窗
+        function openRareVerModal(){
+            const m=document.getElementById('rareVerModal');
+            m.style.display='flex';
+            setTimeout(()=>m.classList.add('show'),10);
+        }
+        function closeRareVerModal(){
+            const m=document.getElementById('rareVerModal');
+            m.classList.remove('show');
+            setTimeout(()=>m.style.display='none',300);
+        }
+        //关于弹窗
         function openAboutModal(){
             const m=document.getElementById('aboutModal');
             m.style.display='flex';

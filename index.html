@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>MC 玩家工具站 · 古风版</title>
 <style>
 /* ========== 淡黄宣纸古风 Token ========== */
@@ -48,6 +48,7 @@ html, body {
     radial-gradient(ellipse at 85% 90%, rgba(180,150,110,0.08) 0%, transparent 50%);
   transition: background-color .35s ease, color .35s ease;
   -webkit-font-smoothing: antialiased;
+  touch-action: manipulation;
 }
 html[data-theme="dark"] body {
   background-image:
@@ -61,14 +62,14 @@ html[data-theme="dark"] body {
   background-size: cover; background-position: center;
   background-repeat: no-repeat;
   opacity: 0.14; pointer-events: none;
-  transition: opacity .4s ease;
+  transition: opacity .3s ease;
 }
 html[data-theme="dark"] #wallpaper { opacity: .08; }
 #wallpaperVideo {
   position: fixed; inset:0; z-index:0;
   width:100%; height:100%; object-fit: cover;
   opacity: .12; pointer-events: none; display: none;
-  transition: opacity .4s ease;
+  transition: opacity .3s ease;
 }
 html[data-theme="dark"] #wallpaperVideo { opacity: .06; }
 
@@ -159,7 +160,7 @@ html[data-theme="dark"] #wallpaperVideo { opacity: .06; }
 .fade-item {
   opacity:0;
   transform: translateY(18px);
-  transition: opacity .7s ease, transform .7s ease;
+  transition: opacity .6s ease, transform .6s ease;
 }
 .fade-item.visible {
   opacity:1;
@@ -334,6 +335,7 @@ html[data-theme="dark"] #wallpaperVideo { opacity: .06; }
   user-select:none;
   background: var(--paper-deep);
   position:relative; z-index:2;
+  touch-action: none;
 }
 .win-header:active {
   cursor: grabbing;
@@ -362,7 +364,8 @@ html[data-theme="dark"] #wallpaperVideo { opacity: .06; }
 
 /* 窗口四角缩放手柄 */
 .resize-handle {
-  position:absolute; width:14px; height:14px; z-index:10;
+  position:absolute; width:16px; height:16px; z-index:10;
+  touch-action: none;
 }
 .rh-tl { top:-2px; left:-2px; cursor:nwse-resize; }
 .rh-tr { top:-2px; right:-2px; cursor:nesw-resize; }
@@ -393,19 +396,27 @@ html[data-theme="dark"] #wallpaperVideo { opacity: .06; }
 .frame-hint a { color: var(--vermilion); text-decoration:none; }
 .frame-hint a:hover { border-bottom:1px solid var(--vermilion); }
 
-/* 遮罩 */
-.overlay {
-  position: fixed; inset:0;
-  background: rgba(44,38,30,.28);
-  z-index: 850;
-  display: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+/* 主题窗口内部滑块 */
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  background: transparent;
 }
-html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
-.overlay.show { display:block; opacity: 1; }
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 14px; width: 14px;
+  border-radius: 50%;
+  background: var(--vermilion);
+  cursor: pointer;
+  margin-top: -5px;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%; height: 4px;
+  cursor: pointer;
+  background: var(--line);
+  border-radius: 2px;
+}
+input[type=range]:focus { outline: none; }
 
 /* 按钮及工具样式 */
 .mode-btn {
@@ -448,6 +459,21 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
   font-weight: 500;
 }
 
+/* 计算器 */
+.calc-btn {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 16px;
+  font-family: var(--font-serif);
+  padding: 12px 0;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+.calc-btn:hover { border-color: var(--vermilion); color: var(--vermilion); }
+.calc-btn:active { background: var(--paper-deep); }
+
 /* 响应式 */
 @media (max-width: 768px) {
   .topbar { padding: 12px 14px; flex-wrap: wrap; gap: 8px; }
@@ -466,7 +492,6 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
 
 <div id="wallpaper"></div>
 <video id="wallpaperVideo" autoplay muted loop playsinline></video>
-<div class="overlay" id="overlay"></div>
 
 <div class="page">
 
@@ -493,7 +518,7 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
 
     <div class="hero-title fade-item">
       <h1><span>MC 玩家工具站</span></h1>
-      <p class="hero-sub">MC 玩家 · 自留地</p>
+      <p class="hero-sub">方块千秋 · 自留雅地</p>
     </div>
 
     <!-- 游戏下载 -->
@@ -502,6 +527,7 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
       <div class="link-row">
         <button class="entry-link" data-frame="安卓版 MC 基岩版下载|https://mcrac.top/">安卓版 MC 基岩版下载</button>
         <button class="entry-link" data-frame="Windows MC 基岩版下载|https://www.mcappx.com/">Windows MC 基岩版下载</button>
+        <button class="entry-link accent" id="btnPcl">PCL 2.13 下载</button>
       </div>
     </section>
 
@@ -518,7 +544,6 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
     <section class="scroll-item fade-item">
       <h2><span class="mark"></span>网页版</h2>
       <div class="link-row">
-        <!-- 已改为大写 MCJS -->
         <button class="entry-link accent" id="btnMc">我的世界MCJS · 内嵌窗</button>
       </div>
     </section>
@@ -551,8 +576,10 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
       <h2><span class="mark"></span>其他工具</h2>
       <div class="link-row">
         <a class="entry-link" href="xncs.html">性能测试</a>
+        <button class="entry-link" id="btnWeb">游历 · 内嵌浏览器</button>
+        <button class="entry-link" id="btnCalc">算盘 · 计算器</button>
       </div>
-      <p style="margin-top:12px;font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);letter-spacing:.08em;">更多工具敬请期待</p>
+      <p style="margin-top:12px;font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);letter-spacing:.08em;">其余奇巧，静候佳音</p>
     </section>
 
   </main>
@@ -571,9 +598,9 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body" style="text-align:center;">
-    <p style="font-size:13px;color:var(--ink-muted);font-family:var(--font-sans);margin-bottom:12px;">支持 MP3 / WAV / OGG 等本地音频</p>
+    <p style="font-size:13px;color:var(--ink-muted);font-family:var(--font-sans);margin-bottom:12px;">容 MP3 / WAV / OGG 等音律</p>
     <label class="upload-label" style="margin-bottom:12px;padding:16px 8px;display:block;border:1px dashed var(--line);cursor:pointer;">
-      选择本地歌曲<input type="file" id="musicFileInput" accept="audio/*" style="display:none;">
+      择本地佳音<input type="file" id="musicFileInput" accept="audio/*" style="display:none;">
     </label>
     <div id="audioPlayerContainer" style="display:none;margin-top:10px;">
       <audio id="audioPlayer" controls style="width:100%;outline:none;border-radius:6px;"></audio>
@@ -589,20 +616,31 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body">
-    <div style="margin-bottom:18px;">
+    <div style="margin-bottom:16px;">
       <div style="font-size:12px;letter-spacing:.16em;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:10px;">明暗</div>
       <div style="display:flex;gap:8px;">
         <button class="mode-btn" data-mode="light">浅色 · 宣纸</button>
         <button class="mode-btn" data-mode="dark">深色 · 松烟</button>
       </div>
     </div>
-    <div>
+    
+    <div style="margin-bottom:16px;">
       <div style="font-size:12px;letter-spacing:.16em;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:10px;">壁纸 · 图片 / 视频</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <label class="upload-label">上传图片<input type="file" id="wallImgInput" accept="image/*" style="display:none;"></label>
         <label class="upload-label">上传视频<input type="file" id="wallVidInput" accept="video/*" style="display:none;"></label>
       </div>
       <button id="clearWall" class="clear-wall">清空壁纸</button>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <div style="font-size:12px;letter-spacing:.16em;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:8px;">视频音量（默静）</div>
+      <input type="range" id="videoVolume" min="0" max="1" step="0.05" value="0">
+    </div>
+
+    <div>
+      <div style="font-size:12px;letter-spacing:.16em;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:8px;">壁纸不透明度</div>
+      <input type="range" id="wallOpacity" min="0" max="1" step="0.02" value="0.14">
     </div>
   </div>
 </div>
@@ -615,7 +653,23 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
   </div>
   <div class="win-body" style="text-align:center;">
     <div style="font-size:22px;letter-spacing:.08em;color:var(--vermilion);padding:14px 0 8px;font-weight:500;">mc_huyxa</div>
-    <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);letter-spacing:.1em;line-height:1.8;">打开抖音搜索此号<br>即可找到作者</div>
+    <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);letter-spacing:.1em;line-height:1.8;">开抖音寻此号<br>即可遇知音</div>
+  </div>
+</div>
+
+<!-- PCL 下载 -->
+<div class="win" id="pclWin" style="width:min(400px,90vw);">
+  <div class="win-header">
+    <span class="win-title">PCL 2.13 下载</span>
+    <div class="win-actions"><button class="win-close">×</button></div>
+  </div>
+  <div class="win-body">
+    <p style="font-size:13px;line-height:2.1;color:var(--ink-muted);font-family:var(--font-sans);text-indent:2em;margin-bottom:16px;">
+      因某讲席之时，家长幼童于某服充钱，家长举告PCL，新版PCL遂闭源Minecraft下载。本站特供PCL 2.13，安全无毒。
+    </p>
+    <div style="text-align:center;">
+      <a href="./Plain Craft Launcher 2.exe" download class="entry-link accent" style="padding:10px 24px;">下载 PCL 2.13 启动器</a>
+    </div>
   </div>
 </div>
 
@@ -628,21 +682,25 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
   <div class="win-body">
     <p style="font-size:13px;color:var(--ink-muted);font-family:var(--font-sans);margin-bottom:10px;">服务器地址：</p>
     <div id="javaAddr" style="border:1px dashed var(--gold);padding:10px 12px;font-size:15px;letter-spacing:.06em;cursor:pointer;text-align:center;transition:all .2s;">cn-hk1.mfrp.space:64032</div>
-    <p style="font-size:11px;color:var(--ink-subtle);font-family:var(--font-sans);margin-top:8px;text-align:center;">点击地址即可复制</p>
+    <p style="font-size:11px;color:var(--ink-subtle);font-family:var(--font-sans);margin-top:8px;text-align:center;">轻触此处，地址自入囊中</p>
   </div>
 </div>
 
-<!-- 服务器状态查询 -->
-<div class="win" id="statusWin" style="width:min(340px,90vw);">
+<!-- 服务器状态查询 (内嵌) -->
+<div class="win iframe-win" id="statusWin" style="width:min(860px,92vw);height:min(620px,82vh);">
   <div class="win-header">
     <span class="win-title">服务器状态查询</span>
-    <div class="win-actions"><button class="win-close">×</button></div>
+    <div class="win-actions">
+      <button class="win-btn win-fs" title="全屏">⛶</button>
+      <button class="win-close">×</button>
+    </div>
   </div>
-  <div class="win-body" style="text-align:center;">
-    <p style="font-size:13px;line-height:2;color:var(--ink-muted);font-family:var(--font-sans);margin-bottom:14px;">
-      查询服务器在线状态，可前往 mcsrvstat 工具页。
-    </p>
-    <a class="entry-link accent" href="https://mcsrvstat.us/" target="_blank" rel="noopener">前往 mcsrvstat ↗</a>
+  <div class="win-body">
+    <iframe src="https://mcsrvstat.us/" allowfullscreen></iframe>
+  </div>
+  <div class="frame-hint">
+    若此处白茫无物，乃是该站闭门谢客 —
+    <a href="https://mcsrvstat.us/" target="_blank" rel="noopener">破窗而出 ↗</a>
   </div>
 </div>
 
@@ -667,7 +725,7 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
   </div>
   <div class="win-body" style="text-align:center;">
     <button class="entry-link" data-frame="我的世界传奇开发版本|https://1835013311.share.123pan.cn/123pan/LbsoTd-gTewd?pwd=sC6M#">我的世界传奇开发版本</button>
-    <p style="margin-top:18px;font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);">更多版本敬请期待</p>
+    <p style="margin-top:18px;font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);">其余版本，静候佳音</p>
   </div>
 </div>
 
@@ -679,7 +737,7 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
   </div>
   <div class="win-body">
     <p style="font-size:13px;line-height:2.1;color:var(--ink-muted);font-family:var(--font-sans);">
-      这是一个 MC 基岩版玩家自制站点，提供下载、联机工具、游戏查询等功能。所有资源仅供玩家学习交流使用。
+      此为 MC 基岩版玩家自制之雅地，集下载、联机、查询诸般奇巧于此。所藏资材，仅供研学交流耳。
     </p>
   </div>
 </div>
@@ -692,15 +750,15 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
   </div>
   <div class="win-body">
     <ul class="log-list">
-      <li><b>1.0</b> 创建该网页</li>
-      <li><b>1.1</b> 加入更多功能</li>
-      <li><b>1.2</b> 加入更多功能</li>
-      <li><b>1.3</b> 修复一些 bug</li>
-      <li><b>1.4</b> 美化网页，部署到cloudflare</li>
-      <li><b>1.5</b> 加入更多功能</li>
-      <li><b>1.6</b> 修复一些 bug</li>
-      <li><b>1.7</b> 加入背景</li>
-      <li><b>2.0</b> 彻底重写网页，更换新风格</li>
+      <li><b>1.0</b> 初建此站</li>
+      <li><b>1.1</b> 增补奇巧</li>
+      <li><b>1.2</b> 增补奇巧</li>
+      <li><b>1.3</b> 修补残缺</li>
+      <li><b>1.4</b> 润色装潢，迁于cloudflare</li>
+      <li><b>1.5</b> 增补奇巧</li>
+      <li><b>1.6</b> 修补残缺</li>
+      <li><b>1.7</b> 铺设背景</li>
+      <li><b>2.0</b> 推倒重来，重塑古风</li>
     </ul>
   </div>
 </div>
@@ -718,8 +776,62 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
     <iframe src="https://mcjs.link/" allowfullscreen></iframe>
   </div>
   <div class="frame-hint">
-    若内容空白，说明该站禁止内嵌 —
-    <a href="https://mcjs.link/" target="_blank" rel="noopener">新窗打开 ↗</a>
+    若此处白茫无物，乃是该站闭门谢客 —
+    <a href="https://mcjs.link/" target="_blank" rel="noopener">破窗而出 ↗</a>
+  </div>
+</div>
+
+<!-- 内嵌浏览器 -->
+<div class="win iframe-win" id="webWin" style="width:min(860px,92vw);height:min(620px,82vh);">
+  <div class="win-header">
+    <span class="win-title">游历 · 内嵌浏览器</span>
+    <div class="win-actions">
+      <button class="win-btn win-fs" title="全屏">⛶</button>
+      <button class="win-close">×</button>
+    </div>
+  </div>
+  <div style="padding:8px;border-bottom:1px solid var(--line);background:var(--paper-deep);display:flex;gap:8px;">
+    <input type="text" id="webUrlInput" placeholder="https://" style="flex:1;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 10px;font-family:var(--font-sans);outline:none;">
+    <button id="webGoBtn" class="top-btn" style="padding:4px 16px;">造访</button>
+  </div>
+  <div class="win-body">
+    <iframe id="webIframe" src="about:blank" allowfullscreen></iframe>
+  </div>
+  <div class="frame-hint">
+    若此处白茫无物，乃是该站闭门谢客 —
+    <a id="webNewWin" href="#" target="_blank">破窗而出 ↗</a>
+  </div>
+</div>
+
+<!-- 计算器 -->
+<div class="win" id="calcWin" style="width:min(300px,90vw);">
+  <div class="win-header">
+    <span class="win-title">算盘 · 计算器</span>
+    <div class="win-actions"><button class="win-close">×</button></div>
+  </div>
+  <div class="win-body" style="padding:12px;">
+    <input type="text" id="calcDisplay" readonly style="width:100%;text-align:right;font-size:22px;padding:10px;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);margin-bottom:12px;outline:none;font-family:var(--font-sans);">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+      <button class="calc-btn" data-val="C">C</button>
+      <button class="calc-btn" data-val="(">(</button>
+      <button class="calc-btn" data-val=")">)</button>
+      <button class="calc-btn" data-val="/">÷</button>
+      <button class="calc-btn" data-val="7">7</button>
+      <button class="calc-btn" data-val="8">8</button>
+      <button class="calc-btn" data-val="9">9</button>
+      <button class="calc-btn" data-val="*">×</button>
+      <button class="calc-btn" data-val="4">4</button>
+      <button class="calc-btn" data-val="5">5</button>
+      <button class="calc-btn" data-val="6">6</button>
+      <button class="calc-btn" data-val="-">-</button>
+      <button class="calc-btn" data-val="1">1</button>
+      <button class="calc-btn" data-val="2">2</button>
+      <button class="calc-btn" data-val="3">3</button>
+      <button class="calc-btn" data-val="+">+</button>
+      <button class="calc-btn" data-val="0" style="grid-column:span 2;">0</button>
+      <button class="calc-btn" data-val=".">.</button>
+      <button class="calc-btn" data-val="=">=</button>
+    </div>
   </div>
 </div>
 
@@ -727,7 +839,6 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
 <script>
 (function () {
   const html = document.documentElement;
-  const overlay = document.getElementById('overlay');
 
   /* ============================================================
      1. 音乐播放器
@@ -764,15 +875,19 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
     musicText.textContent = '音乐盒';
   });
 
-
   /* ============================================================
-     2. 主题 & 壁纸
+     2. 主题 & 壁纸 (音量与不透明度)
      ============================================================ */
   const LS_MODE = 'moju_theme_mode';
   const LS_WALL_TYPE = 'moju_wall_type';
   const LS_WALL_DATA = 'moju_wall_data';
+  const LS_VID_VOL = 'moju_vid_vol';
+  const LS_WALL_OPACITY = 'moju_wall_opacity';
+
   const wallpaperDiv = document.getElementById('wallpaper');
   const wallpaperVideo = document.getElementById('wallpaperVideo');
+  const videoVolumeSlider = document.getElementById('videoVolume');
+  const wallOpacitySlider = document.getElementById('wallOpacity');
 
   function applyMode(mode) {
     html.dataset.theme = mode === 'dark' ? 'dark' : 'light';
@@ -796,11 +911,42 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
   function restoreWallpaper() {
     const type = localStorage.getItem(LS_WALL_TYPE);
     const data = localStorage.getItem(LS_WALL_DATA);
+    const vol = localStorage.getItem(LS_VID_VOL);
+    const opa = localStorage.getItem(LS_WALL_OPACITY);
+
+    if (vol !== null) {
+      videoVolumeSlider.value = vol;
+      wallpaperVideo.volume = parseFloat(vol);
+      wallpaperVideo.muted = parseFloat(vol) === 0;
+    } else {
+      wallpaperVideo.muted = true;
+    }
+
+    if (opa !== null) {
+      wallOpacitySlider.value = opa;
+      wallpaperDiv.style.opacity = opa;
+      wallpaperVideo.style.opacity = opa;
+    }
+
     if (type === 'image' && data) {
       wallpaperDiv.style.backgroundImage = `url("${data}")`;
       wallpaperDiv.style.display = 'block';
     }
   }
+
+  videoVolumeSlider.addEventListener('input', function() {
+    const v = parseFloat(this.value);
+    wallpaperVideo.volume = v;
+    wallpaperVideo.muted = (v === 0);
+    localStorage.setItem(LS_VID_VOL, v);
+  });
+
+  wallOpacitySlider.addEventListener('input', function() {
+    const opa = this.value;
+    wallpaperDiv.style.opacity = opa;
+    wallpaperVideo.style.opacity = opa;
+    localStorage.setItem(LS_WALL_OPACITY, opa);
+  });
 
   function setImageWallpaper(dataUrl) {
     wallpaperVideo.style.display = 'none';
@@ -884,7 +1030,7 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
   });
 
   /* ============================================================
-     4. 返回顶部 + 淡入淡出
+     4. 返回顶部 + 滑动淡入淡出
      ============================================================ */
   const backTop = document.getElementById('backTop');
   window.addEventListener('scroll', () => {
@@ -898,7 +1044,9 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
       entries.forEach(en => {
         if (en.isIntersecting) {
           en.target.classList.add('visible');
-          io.unobserve(en.target);
+        } else {
+          // 离开视口时移除，下次滑动重新触发
+          en.target.classList.remove('visible');
         }
       });
     }, { threshold: 0.1 });
@@ -908,7 +1056,7 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
   }
 
   /* ============================================================
-     5. 窗口系统：拖动 / 缩放 / 全屏 / 多窗口
+     5. 窗口系统：拖动 / 缩放 / 全屏 / 多窗口 / 触屏支持
      ============================================================ */
   let zTop = 1000;
   let spawnOffset = 0;
@@ -920,7 +1068,6 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
     if (win.dataset.inited === '1') return;
     win.dataset.inited = '1';
 
-    // 自动注入四角缩放手柄
     if (!win.querySelector('.resize-handle')) {
       ['tl','tr','bl','br'].forEach(pos => {
         const h = document.createElement('div');
@@ -930,6 +1077,8 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
     }
 
     const header = win.querySelector('.win-header');
+
+    // 鼠标拖动
     if (header) {
       header.addEventListener('mousedown', (e) => {
         if (e.button !== 0) return;
@@ -941,13 +1090,26 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
         win.style.bottom = 'auto';
         dragState = { win, sx: e.clientX, sy: e.clientY, ol: rect.left, ot: rect.top };
         win.style.zIndex = ++zTop;
-        overlay.classList.add('show');
         document.body.style.userSelect = 'none';
         e.preventDefault();
       });
+
+      // 触屏拖动
+      header.addEventListener('touchstart', (e) => {
+        if (e.target.closest('.win-close, .win-btn')) return;
+        const touch = e.touches[0];
+        const rect = win.getBoundingClientRect();
+        win.style.left = rect.left + 'px';
+        win.style.top = rect.top + 'px';
+        win.style.right = 'auto';
+        win.style.bottom = 'auto';
+        dragState = { win, sx: touch.clientX, sy: touch.clientY, ol: rect.left, ot: rect.top };
+        win.style.zIndex = ++zTop;
+      }, { passive: true });
     }
 
     win.querySelectorAll('.resize-handle').forEach(handle => {
+      // 鼠标缩放
       handle.addEventListener('mousedown', (e) => {
         if (e.button !== 0) return;
         e.preventDefault();
@@ -966,6 +1128,25 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
         win.style.zIndex = ++zTop;
         document.body.style.userSelect = 'none';
       });
+
+      // 触屏缩放
+      handle.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const touch = e.touches[0];
+        const rect = win.getBoundingClientRect();
+        win.style.left = rect.left + 'px';
+        win.style.top = rect.top + 'px';
+        win.style.right = 'auto';
+        win.style.bottom = 'auto';
+        resizeState = {
+          win, handle,
+          sx: touch.clientX, sy: touch.clientY,
+          sw: rect.width, sh: rect.height,
+          sl: rect.left, st: rect.top
+        };
+        win.style.zIndex = ++zTop;
+      }, { passive: false });
     });
 
     win.addEventListener('mousedown', () => {
@@ -973,18 +1154,18 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
     });
   }
 
-  document.addEventListener('mousemove', (e) => {
+  function handleMove(clientX, clientY) {
     if (dragState) {
       const { win, sx, sy, ol, ot } = dragState;
       const m = 6;
       const ml = Math.max(m, window.innerWidth - win.offsetWidth - m);
       const mt = Math.max(m, window.innerHeight - win.offsetHeight - m);
-      win.style.left = Math.min(Math.max(ol + e.clientX - sx, m), ml) + 'px';
-      win.style.top = Math.min(Math.max(ot + e.clientY - sy, m), mt) + 'px';
+      win.style.left = Math.min(Math.max(ol + clientX - sx, m), ml) + 'px';
+      win.style.top = Math.min(Math.max(ot + clientY - sy, m), mt) + 'px';
     }
     if (resizeState) {
       const { win, handle, sx, sy, sw, sh, sl, st } = resizeState;
-      const dx = e.clientX - sx, dy = e.clientY - sy;
+      const dx = clientX - sx, dy = clientY - sy;
       const right = handle.classList.contains('rh-tr') || handle.classList.contains('rh-br');
       const bottom = handle.classList.contains('rh-bl') || handle.classList.contains('rh-br');
       const nw = Math.max(260, sw + (right ? dx : -dx));
@@ -994,23 +1175,31 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
       if (!right) win.style.left = (sl + sw - nw) + 'px';
       if (!bottom) win.style.top = (st + sh - nh) + 'px';
     }
-  });
+  }
 
-  document.addEventListener('mouseup', () => {
+  function endMove() {
     if (dragState || resizeState) {
       dragState = null;
       resizeState = null;
       document.body.style.userSelect = '';
     }
-  });
+  }
+
+  document.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
+  document.addEventListener('touchmove', (e) => {
+    if (dragState || resizeState) {
+      e.preventDefault(); // 阻止页面滚动
+      handleMove(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: false });
+  document.addEventListener('mouseup', endMove);
+  document.addEventListener('touchend', endMove);
 
   function openWinElement(win) {
     win.classList.add('open');
     win.style.zIndex = ++zTop;
-    overlay.classList.add('show');
     if (!win.dataset.placed) {
       win.dataset.placed = '1';
-      // 首次打开居中
       const rect = win.getBoundingClientRect();
       let left = (window.innerWidth - rect.width) / 2;
       let top = (window.innerHeight - rect.height) / 2 - 30;
@@ -1027,8 +1216,6 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
 
   function closeWinElement(win) {
     win.classList.remove('open');
-    const anyOpen = [...document.querySelectorAll('.win.open')].length > 0;
-    if (!anyOpen) overlay.classList.remove('show');
   }
 
   function toggleFullscreen(win) {
@@ -1075,19 +1262,9 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
     });
   }
 
-  // 初始化现有窗口
   document.querySelectorAll('.win').forEach(win => {
     initWin(win);
     bindWinButtons(win);
-  });
-
-  // 遮罩点击仅关闭最顶层窗口
-  overlay.addEventListener('click', () => {
-    const openWins = [...document.querySelectorAll('.win.open')];
-    if (openWins.length > 0) {
-      openWins.sort((a, b) => (parseInt(b.style.zIndex) || 0) - (parseInt(a.style.zIndex) || 0));
-      closeWinElement(openWins[0]);
-    }
   });
 
   /* ---- 动态内嵌网页窗口 ---- */
@@ -1121,8 +1298,8 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
     a.href = url;
     a.target = '_blank';
     a.rel = 'noopener';
-    a.textContent = '新窗打开 ↗';
-    hint.appendChild(document.createTextNode('若内容空白，说明该站禁止内嵌 — '));
+    a.textContent = '破窗而出 ↗';
+    hint.appendChild(document.createTextNode('若此处白茫无物，乃是该站闭门谢客 — '));
     hint.appendChild(a);
 
     win.appendChild(header);
@@ -1141,6 +1318,7 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
      ============================================================ */
   document.getElementById('themeBtn').addEventListener('click', () => openWinElement(document.getElementById('themeWin')));
   document.getElementById('btnDouyin').addEventListener('click', () => openWinElement(document.getElementById('douyinWin')));
+  document.getElementById('btnPcl').addEventListener('click', () => openWinElement(document.getElementById('pclWin')));
   document.getElementById('btnJava').addEventListener('click', () => openWinElement(document.getElementById('javaWin')));
   document.getElementById('btnStatus').addEventListener('click', () => openWinElement(document.getElementById('statusWin')));
   document.getElementById('btnColor').addEventListener('click', () => openWinElement(document.getElementById('colorWin')));
@@ -1148,6 +1326,8 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
   document.getElementById('btnAbout').addEventListener('click', () => openWinElement(document.getElementById('aboutWin')));
   document.getElementById('btnLog').addEventListener('click', () => openWinElement(document.getElementById('logWin')));
   document.getElementById('btnMc').addEventListener('click', () => openWinElement(document.getElementById('mcWin')));
+  document.getElementById('btnWeb').addEventListener('click', () => openWinElement(document.getElementById('webWin')));
+  document.getElementById('btnCalc').addEventListener('click', () => openWinElement(document.getElementById('calcWin')));
 
   document.querySelectorAll('[data-frame]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1179,7 +1359,53 @@ html[data-theme="dark"] .overlay { background: rgba(0,0,0,.45); }
   }
 
   /* ============================================================
-     7. 登录状态
+     7. 内嵌浏览器
+     ============================================================ */
+  const webUrlInput = document.getElementById('webUrlInput');
+  const webGoBtn = document.getElementById('webGoBtn');
+  const webIframe = document.getElementById('webIframe');
+  const webNewWin = document.getElementById('webNewWin');
+
+  function navigateWeb() {
+    let url = webUrlInput.value.trim();
+    if (!url) return;
+    if (!/^https?:\/\//i.test(url)) {
+      url = 'https://' + url;
+    }
+    webIframe.src = url;
+    webNewWin.href = url;
+  }
+
+  webGoBtn.addEventListener('click', navigateWeb);
+  webUrlInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') navigateWeb();
+  });
+
+  /* ============================================================
+     8. 计算器
+     ============================================================ */
+  const calcDisplay = document.getElementById('calcDisplay');
+  
+  document.querySelectorAll('.calc-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = btn.dataset.val;
+      if (val === 'C') {
+        calcDisplay.value = '';
+      } else if (val === '=') {
+        try {
+          const res = new Function('return ' + calcDisplay.value.replace(/×/g, '*').replace(/÷/g, '/'))();
+          calcDisplay.value = res;
+        } catch (e) {
+          calcDisplay.value = 'Error';
+        }
+      } else {
+        calcDisplay.value += val;
+      }
+    });
+  });
+
+  /* ============================================================
+     9. 登录状态
      ============================================================ */
   function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));

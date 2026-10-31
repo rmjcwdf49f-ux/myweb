@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>入卷 · 方块小筑</title>
+<style>
+:root {
+  --paper: #f5ecd7;
+  --paper-deep: #ede3cb;
+  --ink: #2c261e;
+  --ink-muted: #6b604f;
+  --ink-subtle: #9e9280;
+  --line: #d4c8b0;
+  --vermilion: #b83a2e;
+  --gold: #a67c3d;
+  --surface: rgba(245,236,215,0.94);
+  --surface-solid: #f5ecd7;
+  --shadow: 0 16px 48px rgba(60,48,32,0.13);
+  --font-serif: 'Noto Serif SC', 'Songti SC', 'SimSun', Georgia, serif;
+  --font-sans: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+html[data-theme="dark"] {
+  --paper: #1a1712;
+  --paper-deep: #221e17;
+  --ink: #e6dcc8;
+  --ink-muted: #a89a82;
+  --ink-subtle: #6b604f;
+  --line: #3d362b;
+  --vermilion: #d45a4a;
+  --gold: #c49a5a;
+  --surface: rgba(26,23,18,0.94);
+  --surface-solid: #1a1712;
+  --shadow: 0 16px 56px rgba(0,0,0,0.60);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  min-height:100vh;
+  font-family: var(--font-serif);
+  color: var(--ink);
+  background-color: var(--paper);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 20% 10%, rgba(200,170,120,0.10) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 90%, rgba(180,150,110,0.08) 0%, transparent 50%);
+  transition: background-color .35s ease, color .35s ease;
+  -webkit-font-smoothing: antialiased;
+}
+html[data-theme="dark"] body {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 20% 10%, rgba(160,120,60,0.05) 0%, transparent 55%);
+}
+
+#wallpaper {
+  position: fixed; inset:0; z-index:0;
+  background-size: cover; background-position: center;
+  background-repeat: no-repeat; opacity: .14; pointer-events:none;
+  transition: opacity .4s;
+}
+html[data-theme="dark"] #wallpaper { opacity: .08; }
+#wallpaperVideo {
+  position: fixed; inset:0; z-index:0;
+  width:100%; height:100%; object-fit:cover;
+  opacity:.12; pointer-events:none; display:none;
+}
+html[data-theme="dark"] #wallpaperVideo { opacity:.06; }
+
+.page {
+  position:relative; z-index:1; min-height:100vh;
+  display:flex; flex-direction:column;
+}
+
+.topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 18px clamp(20px,5vw,48px);
+  border-bottom:1px solid var(--line);
+  background: var(--surface);
+  position:sticky; top:0; z-index:200;
+}
+.brand { font-size:clamp(18px,2.2vw,24px); font-weight:500; letter-spacing:.18em; }
+.brand em { font-style:normal; color:var(--vermilion); }
+.back-link {
+  font-size:13px; color:var(--ink-muted); text-decoration:none;
+  letter-spacing:.12em; font-family:var(--font-sans);
+  border-bottom:1px solid transparent; transition:all .22s;
+}
+.back-link:hover { color:var(--vermilion); border-bottom-color:var(--vermilion); }
+
+.main {
+  flex:1; display:flex; align-items:center; justify-content:center;
+  padding: 48px clamp(20px,5vw,48px);
+}
+
+.auth-box {
+  width:100%; max-width:440px;
+  border:1px solid var(--line);
+  background: var(--surface);
+  padding: clamp(28px,5vw,44px) clamp(24px,5vw,40px);
+  position:relative;
+  box-shadow: var(--shadow);
+}
+.auth-box::before {
+  content:''; position:absolute; inset:8px;
+  border:1px solid var(--line); pointer-events:none; opacity:.55;
+}
+.auth-title {
+  text-align:center; font-size:clamp(23px,3.5vw,30px);
+  font-weight:400; letter-spacing:.16em; margin-bottom:8px;
+}
+.auth-sub {
+  text-align:center; font-size:12px; color:var(--ink-subtle);
+  letter-spacing:.22em; font-family:var(--font-sans); margin-bottom:28px;
+}
+.field { margin-bottom:20px; }
+.field label {
+  display:block; font-size:12px; letter-spacing:.16em;
+  color:var(--ink-muted); font-family:var(--font-sans); margin-bottom:8px;
+}
+.field input {
+  width:100%; border:none; border-bottom:1px solid var(--line);
+  background:transparent; padding:10px 2px;
+  font-family:var(--font-serif); font-size:16px; color:var(--ink);
+  outline:none; letter-spacing:.04em; transition:border-color .25s;
+}
+.field input:focus { border-bottom-color:var(--vermilion); }
+.field input::placeholder { color:var(--ink-subtle); font-size:14px; }
+
+.auth-btn {
+  width:100%; border:1px solid var(--ink); background:transparent;
+  color:var(--ink); padding:13px; font-family:var(--font-serif);
+  font-size:15px; letter-spacing:.24em; cursor:pointer;
+  margin-top:8px; transition:all .28s;
+}
+.auth-btn:hover { background:var(--ink); color:var(--paper); }
+
+.switch-line {
+  text-align:center; margin-top:22px;
+  font-size:13px; color:var(--ink-muted);
+  font-family:var(--font-sans); letter-spacing:.06em;
+}
+.switch-line a {
+  color:var(--vermilion); text-decoration:none;
+  border-bottom:1px solid transparent; transition:border-color .2s; cursor:pointer;
+}
+.switch-line a:hover { border-bottom-color:var(--vermilion); }
+
+.msg {
+  min-height:20px; font-size:12px; font-family:var(--font-sans);
+  letter-spacing:.04em; margin-top:10px; text-align:center;
+}
+.msg.err { color:var(--vermilion); }
+.msg.ok { color:#4a7a5a; }
+html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
+
+.hint-box {
+  margin-top:22px; padding:13px;
+  border:1px dashed var(--line);
+  font-size:11px; line-height:1.9; color:var(--ink-subtle);
+  font-family:var(--font-sans); letter-spacing:.03em;
+}
+.hint-box strong { color:var(--ink-muted); font-weight:500; }
+
+/* 可拖动窗口（登录页提示用） */
+.win {
+  position:fixed; background:var(--surface-solid);
+  border:1px solid var(--line); box-shadow:var(--shadow);
+  z-index:900; display:none; flex-direction:column;
+  min-width:260px; max-width:92vw; font-family:var(--font-serif);
+  backdrop-filter:none; -webkit-backdrop-filter:none;
+}
+.win::before {
+  content:''; position:absolute; inset:5px;
+  border:1px solid var(--line); pointer-events:none; opacity:.5; z-index:0;
+}
+.win.open { display:flex; }
+.win-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:11px 14px; border-bottom:1px solid var(--line);
+  cursor:move; user-select:none; background:var(--paper-deep);
+  position:relative; z-index:2;
+}
+.win-title { font-size:13px; letter-spacing:.14em; font-weight:500; }
+.win-close {
+  border:none; background:transparent; color:var(--ink-muted);
+  font-size:19px; line-height:1; cursor:pointer; padding:0 5px;
+  font-family:var(--font-sans); transition:color .2s;
+}
+.win-close:hover { color:var(--vermilion); }
+.win-body {
+  padding:16px; position:relative; z-index:1; max-height:60vh; overflow:auto;
+}
+
+@media (max-width:520px) {
+  .auth-box { padding:28px 20px; }
+  .back-link { font-size:12px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition-duration:.01ms !important; } }
+</style>
+</head>
+<body>
+
+<div id="wallpaper"></div>
+<video id="wallpaperVideo" autoplay muted loop playsinline></video>
+
+<div class="page">
+  <header class="topbar">
+    <div class="brand">墨居<em>·</em>入卷</div>
+    <a class="back-link" href="index.html">← 归去</a>
+  </header>
+
+  <main class="main">
+    <div class="auth-box">
+      <h1 class="auth-title" id="authTitle">入 卷</h1>
+      <p class="auth-sub" id="authSub">已有名帖 · 请题旧名</p>
+
+      <form id="authForm" autocomplete="off">
+        <div class="field">
+          <label for="username">名号</label>
+          <input type="text" id="username" placeholder="如：松风客" maxlength="20" required>
+        </div>
+        <div class="field">
+          <label for="password">密语</label>
+          <input type="password" id="password" placeholder="至少 4 位" minlength="4" required>
+        </div>
+        <button type="submit" class="auth-btn" id="submitBtn">题 名 入 卷</button>
+      </form>
+
+      <div class="msg" id="msg"></div>
+
+      <div class="switch-line">
+        <span id="switchText">初来此地？</span>
+        <a id="switchMode">另立新名</a>
+      </div>
+
+      <div class="hint-box">
+        <strong>说明</strong><br>
+        纯前端 · 名号与密语摘要仅存本地浏览器。密语以 SHA-256 摘要保存，原文不落盘。清空浏览器数据即散卷。
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- 提示窗口 -->
+<div class="win" id="infoWin" style="width:min(320px,88vw);">
+  <div class="win-header">
+    <span class="win-title">卷中消息</span>
+    <button class="win-close" data-close="infoWin">×</button>
+  </div>
+  <div class="win-body" id="infoWinBody" style="font-size:13px;line-height:2;color:var(--ink-muted);">—</div>
+</div>
+
+<script>
+(function () {
+  const html = document.documentElement;
+
+  /* ---- 主题 & 壁纸恢复 ---- */
+  function applyMode(mode) { html.dataset.theme = mode === 'dark' ? 'dark' : 'light'; }
+  const savedMode = localStorage.getItem('moju_theme_mode');
+  applyMode(savedMode === 'dark' || savedMode === 'light' ? savedMode : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+
+  (function restoreWall() {
+    const type = localStorage.getItem('moju_wall_type');
+    const data = localStorage.getItem('moju_wall_data');
+    if (type === 'image' && data) {
+      document.getElementById('wallpaper').style.backgroundImage = `url("${data}")`;
+      document.getElementById('wallpaper').style.display = 'block';
+    }
+  })();
+
+  /* ---- SHA-256 ---- */
+  async function sha256(text) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  const LS_USERS = 'moju_users_v1';
+  const LS_CURRENT = 'moju_current_user';
+  const authForm = document.getElementById('authForm');
+  const usernameInput = document.getElementById('username');
+  const passwordInput = document.getElementById('password');
+  const submitBtn = document.getElementById('submitBtn');
+  const authTitle = document.getElementById('authTitle');
+  const authSub = document.getElementById('authSub');
+  const switchText = document.getElementById('switchText');
+  const switchModeEl = document.getElementById('switchMode');
+  const msgEl = document.getElementById('msg');
+
+  let isRegisterMode = false;
+
+  function getUsers() {
+    try { return JSON.parse(localStorage.getItem(LS_USERS) || '{}'); } catch (e) { return {}; }
+  }
+  function saveUsers(u) { localStorage.setItem(LS_USERS, JSON.stringify(u)); }
+  function setMsg(t, type) { msgEl.textContent = t; msgEl.className = 'msg ' + (type || ''); }
+
+  function setMode(register) {
+    isRegisterMode = register;
+    if (register) {
+      authTitle.textContent = '立 名';
+      authSub.textContent = '新名入卷 · 请题密语';
+      submitBtn.textContent = '立 名 入 卷';
+      switchText.textContent = '已有名帖？';
+      switchModeEl.textContent = '题旧名';
+    } else {
+      authTitle.textContent = '入 卷';
+      authSub.textContent = '已有名帖 · 请题旧名';
+      submitBtn.textContent = '题 名 入 卷';
+      switchText.textContent = '初来此地？';
+      switchModeEl.textContent = '另立新名';
+    }
+    setMsg('', '');
+  }
+
+  switchModeEl.addEventListener('click', (e) => {
+    e.preventDefault();
+    setMode(!isRegisterMode);
+    usernameInput.focus();
+  });
+
+  authForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = usernameInput.value.trim();
+    const pwd = passwordInput.value;
+    if (!name || name.length < 2) { setMsg('名号至少两字。', 'err'); return; }
+    if (!pwd || pwd.length < 4) { setMsg('密语至少四位。', 'err'); return; }
+
+    submitBtn.disabled = true;
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = '…';
+
+    try {
+      const users = getUsers();
+      const hash = await sha256(name + '::' + pwd);
+
+      if (isRegisterMode) {
+        if (users[name]) { setMsg('此名已被题过，请另择一名或切换至「题旧名」。', 'err'); return; }
+        users[name] = { name, hash, createdAt: Date.now() };
+        saveUsers(users);
+        localStorage.setItem(LS_CURRENT, JSON.stringify({ name, loginAt: Date.now() }));
+        setMsg('立名已成，入卷中…', 'ok');
+        setTimeout(() => { window.location.href = 'index.html'; }, 500);
+      } else {
+        if (!users[name]) { setMsg('卷中无此名，请先「另立新名」。', 'err'); return; }
+        if (users[name].hash !== hash) { setMsg('密语不契，请重题。', 'err'); return; }
+        localStorage.setItem(LS_CURRENT, JSON.stringify({ name, loginAt: Date.now() }));
+        setMsg('名帖相合，入卷中…', 'ok');
+        setTimeout(() => { window.location.href = 'index.html'; }, 500);
+      }
+    } catch (err) {
+      setMsg('题名时出了岔子，请再试一次。', 'err');
+      console.error(err);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    }
+  });
+
+  /* ---- 可拖动提示窗口 ---- */
+  const infoWin = document.getElementById('infoWin');
+  (function makeDraggable(win) {
+    const header = win.querySelector('.win-header');
+    let dragging = false, sx = 0, sy = 0, ol = 0, ot = 0;
+    header.addEventListener('mousedown', (e) => {
+      if (e.button !== 0 || e.target.closest('.win-close')) return;
+      dragging = true;
+      const rect = win.getBoundingClientRect();
+      win.style.left = rect.left + 'px';
+      win.style.top = rect.top + 'px';
+      win.style.right = 'auto'; win.style.bottom = 'auto';
+      sx = e.clientX; sy = e.clientY; ol = rect.left; ot = rect.top;
+      document.body.style.userSelect = 'none';
+      e.preventDefault();
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!dragging) return;
+      const m = 6;
+      const ml = window.innerWidth - win.offsetWidth - m;
+      const mt = window.innerHeight - win.offsetHeight - m;
+      win.style.left = Math.min(Math.max(ol + e.clientX - sx, m), Math.max(m, ml)) + 'px';
+      win.style.top = Math.min(Math.max(ot + e.clientY - sy, m), Math.max(m, mt)) + 'px';
+    });
+    window.addEventListener('mouseup', () => { dragging = false; document.body.style.userSelect = ''; });
+  })(infoWin);
+
+  document.querySelectorAll('[data-close]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const el = document.getElementById(btn.dataset.close);
+      if (el) el.classList.remove('open');
+    });
+  });
+
+})();
+</script>
+
+</body>
+</html>

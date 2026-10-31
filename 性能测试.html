@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>显卡渲染能力测试 · 主菜单</title>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.126.0/build/three.module.js"
+            }
+        }
+    </script>
+    <style>
+        /* ========== 主题变量 ========== */
+        :root {
+            --bg-body: #0a0c0f;
+            --bg-menu: #14171c;
+            --bg-menu-hover: #2a3442;
+            --bg-panel: #14171c;
+            --bg-hint: #0f1319;
+            --bg-badge: rgba(20, 23, 28, 0.85);
+            --bg-btn: #1e2530;
+            --border-main: #2a2f36;
+            --border-btn: #2e3a48;
+            --border-btn-hover: #4a6a8a;
+            --text-primary: #e0e0e0;
+            --text-title: #ffffff;
+            --text-btn: #cdd9e6;
+            --text-label: #7e8c9c;
+            --text-value: #e0e8f0;
+            --text-sub: #6b7f94;
+            --text-hint: #8fa4b8;
+            --text-accent: #a0c0e0;
+            --bg-accent-tag: #2a3a4a;
+            --accent: #0d6efd;
+            --accent-glow: rgba(13, 110, 253, 0.5);
+            --scrollbar-thumb: #2a3a4a;
+            --warning-bg: #2a1f10;
+            --warning-text: #e0a060;
+            --warning-border: #4a3a1a;
+            --fps-green: #4ade80;
+        }
+
+        html[data-theme="light"] {
+            --bg-body: #f0f3f7;
+            --bg-menu: #ffffff;
+            --bg-menu-hover: #e8eef6;
+            --bg-panel: #ffffff;
+            --bg-hint: #e9eef5;
+            --bg-badge: rgba(255, 255, 255, 0.9);
+            --bg-btn: #f0f4fa;
+            --border-main: #d4dce6;
+            --border-btn: #d4dce6;
+            --border-btn-hover: #7da0c4;
+            --text-primary: #1e293b;
+            --text-title: #0f172a;
+            --text-btn: #334155;
+            --text-label: #64748b;
+            --text-value: #0f172a;
+            --text-sub: #5a6b80;
+            --text-hint: #526174;
+            --text-accent: #2d5a88;
+            --bg-accent-tag: #dbeafe;
+            --accent: #0d6efd;
+            --accent-glow: rgba(13, 110, 253, 0.35);
+            --scrollbar-thumb: #c4cfdd;
+            --warning-bg: #fef3e2;
+            --warning-text: #b45309;
+            --warning-border: #f0d5a8;
+            --fps-green: #16a34a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background-color 0.35s ease, color 0.35s ease;
+        }
+
+        /* ========== 菜单栏 ========== */
+        .menu-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            background: var(--bg-menu);
+            border-bottom: 1px solid var(--border-main);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            z-index: 100;
+            transition: background-color 0.35s ease, border-color 0.35s ease;
+        }
+
+        .menu-left h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            color: var(--text-title);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.35s ease;
+        }
+
+        .menu-left h1 span {
+            font-size: 0.75rem;
+            background: var(--bg-accent-tag);
+            padding: 2px 8px;
+            border-radius: 12px;
+            color: var(--text-accent);
+            font-weight: 400;
+            transition: background-color 0.35s ease, color 0.35s ease;
+        }
+
+        .menu-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .mode-btn {
+            background: var(--bg-btn);
+            border: 1px solid var(--border-btn);
+            color: var(--text-btn);
+            padding: 10px 24px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s ease, background-color 0.35s ease, border-color 0.35s ease, color 0.35s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .mode-btn:hover {
+            background: var(--bg-menu-hover);
+            border-color: var(--border-btn-hover);
+            color: var(--text-title);
+            transform: translateY(-1px);
+        }
+
+        .mode-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #ffffff;
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .mode-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 主题切换按钮 */
+        .theme-toggle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--bg-btn);
+            border: 1px solid var(--border-btn);
+            color: var(--text-btn);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            cursor: pointer;
+            transition: all 0.25s ease, background-color 0.35s ease, border-color 0.35s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
+            user-select: none;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-menu-hover);
+            border-color: var(--border-btn-hover);
+            transform: rotate(15deg) scale(1.05);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* ========== 顶部提示条 ========== */
+        .top-hint-bar {
+            background: var(--bg-hint);
+            border-bottom: 1px solid var(--border-main);
+            padding: 8px 24px;
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-hint);
+            letter-spacing: 0.3px;
+            z-index: 99;
+            transition: background 0.35s, color 0.35s, border-color 0.35s;
+        }
+
+        .top-hint-bar.warning {
+            background: var(--warning-bg);
+            color: var(--warning-text);
+            border-bottom-color: var(--warning-border);
+        }
+
+        /* ========== 右侧信息面板 ========== */
+        .info-panel {
+            position: fixed;
+            top: 120px;
+            right: 20px;
+            width: 300px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-main);
+            border-radius: 12px;
+            padding: 16px 18px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            transition: opacity 0.3s, background-color 0.35s ease, border-color 0.35s ease;
+            pointer-events: auto;
+            max-height: calc(100vh - 160px);
+            overflow-y: auto;
+        }
+
+        .info-panel::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .info-panel::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 2px;
+        }
+
+        .info-panel h3 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-sub);
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--border-main);
+            padding-bottom: 6px;
+            transition: color 0.35s ease, border-color 0.35s ease;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.82rem;
+            margin-bottom: 9px;
+            color: var(--text-primary);
+            gap: 8px;
+        }
+
+        .info-label {
+            color: var(--text-label);
+            flex-shrink: 0;
+            transition: color 0.35s ease;
+        }
+
+        .info-value {
+            font-weight: 500;
+            color: var(--text-value);
+            text-align: right;
+            word-break: break-word;
+            font-variant-numeric: tabular-nums;
+            transition: color 0.35s ease;
+        }
+
+        .info-divider {
+            border-top: 1px solid var(--border-main);
+            margin: 12px 0;
+            transition: border-color 0.35s ease;
+        }
+
+        /* ========== 内容区域（始终深色） ========== */
+        .content-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: #0a0c0f; /* 强制深色，不随主题变化 */
+            overflow: hidden;
+            border-top: 1px solid var(--border-main);
+            transition: border-color 0.35s ease;
+        }
+
+        #three-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .iframe-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: none;
+            z-index: 10;
+            background: #0a0c0f; /* 强制深色 */
+        }
+
+        .iframe-overlay.active {
+            display: block;
+        }
+
+        #three-container.hidden {
+            display: none;
+        }
+
+        /* ========== 性能监控角标 ========== */
+        .perf-badge {
+            position: fixed;
+            top: 120px;
+            left: 20px;
+            background: var(--bg-badge);
+            border: 1px solid var(--border-main);
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 0.75rem;
+            color: var(--text-hint);
+            z-index: 150;
+            backdrop-filter: blur(4px);
+            pointer-events: none;
+            display: none;
+            font-variant-numeric: tabular-nums;
+            transition: background-color 0.35s ease, border-color 0.35s ease, color 0.35s ease;
+        }
+
+        .perf-badge.visible {
+            display: block;
+        }
+
+        .perf-badge span {
+            color: var(--fps-green);
+            font-weight: 600;
+            transition: color 0.35s ease;
+        }
+
+        @media (max-width: 1100px) {
+            .info-panel {
+                width: 260px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .info-panel {
+                display: none;
+            }
+            .menu-bar {
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px 16px;
+            }
+            .menu-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .menu-buttons {
+                flex: 1;
+            }
+            .mode-btn {
+                flex: 1;
+                padding: 10px 12px;
+                font-size: 0.85rem;
+            }
+            .top-hint-bar {
+                font-size: 0.72rem;
+                padding: 6px 12px;
+            }
+            .perf-badge {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-bar">
+        <div class="menu-left">
+            <h1>显卡渲染能力测试 <span>GPU BENCH</span></h1>
+        </div>
+        <div class="menu-right">
+            <div class="menu-buttons">
+                <button id="btnSelf" class="mode-btn active">🔥 自研 3D 压力测试</button>
+                <button id="btnMushroom" class="mode-btn">🍄 毒蘑菇测试</button>
+            </div>
+            <button class="theme-toggle" id="themeToggle" title="切换浅色/深色模式" aria-label="切换主题">🌙</button>
+        </div>
+    </div>
+
+    <!-- 顶部提示条 -->
+    <div class="top-hint-bar" id="topHint">💡 拖动鼠标旋转视角 · 自研压力测试会渲染海量动态实例、粒子与后处理，考验 GPU 填充率与算力</div>
+
+    <!-- 性能监控角标 -->
+    <div class="perf-badge" id="perfBadge">FPS: <span id="fpsValue">--</span> · 实例: <span id="instValue">--</span></div>
+
+    <!-- 右侧信息面板 -->
+    <div class="info-panel" id="infoPanel">
+        <h3>💻 系统信息</h3>
+        <div class="info-item">
+            <span class="info-label">系统版本</span>
+            <span class="info-value" id="osVersion">检测中...</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">平台</span>
+            <span class="info-value" id="platformInfo">-</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">浏览器</span>
+            <span class="info-value" id="browserInfo">-</span>
+        </div>
+        <div class="info-divider"></div>
+        <h3>⚙️ 硬件信息</h3>
+        <div class="info-item">
+            <span class="info-label">CPU 核心</span>
+            <span class="info-value" id="cpuInfo">检测中...</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">内存</span>
+            <span class="info-value" id="memoryInfo">检测中...</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">显卡</span>
+            <span class="info-value" id="gpuInfo">检测中...</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">显卡厂商</span>
+            <span class="info-value" id="gpuVendor">检测中...</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">WebGL 版本</span>
+            <span class="info-value" id="webglVersion">检测中...</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">最大纹理尺寸</span>
+            <span class="info-value" id="maxTexture">检测中...</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">最大视口</span>
+            <span class="info-value" id="maxViewport">检测中...</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">屏幕分辨率</span>
+            <span class="info-value" id="screenRes">检测中...</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">设备像素比</span>
+            <span class="info-value" id="pixelRatio">检测中...</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">屏幕刷新率</span>
+            <span class="info-value" id="refreshRate">检测中...</span>
+        </div>
+        <div class="info-divider"></div>
+        <h3>📊 运行状态</h3>
+        <div class="info-item">
+            <span class="info-label">当前 FPS</span>
+            <span class="info-value" id="liveFps">--</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">渲染分辨率</span>
+            <span class="info-value" id="renderRes">--</span>
+        </div>
+    </div>
+
+    <div class="content-area">
+        <div id="three-container"></div>
+        <iframe id="mushroomIframe" class="iframe-overlay" src="about:blank" allow="fullscreen" loading="lazy"></iframe>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'https://unpkg.com/three@0.126.0/examples/jsm/controls/OrbitControls.js';
+        import { EffectComposer } from 'https://unpkg.com/three@0.126.0/examples/jsm/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'https://unpkg.com/three@0.126.0/examples/jsm/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'https://unpkg.com/three@0.126.0/examples/jsm/postprocessing/UnrealBloomPass.js';
+        import { ShaderPass } from 'https://unpkg.com/three@0.126.0/examples/jsm/postprocessing/ShaderPass.js';
+
+        // ===================== 主题管理 =====================
+        const THEME_KEY = 'gpu-bench-theme';
+        const htmlEl = document.documentElement;
+        const themeToggle = document.getElementById('themeToggle');
+
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                htmlEl.setAttribute('data-theme', 'light');
+                themeToggle.textContent = '☀️';
+                themeToggle.title = '切换到深色模式';
+            } else {
+                htmlEl.removeAttribute('data-theme');
+                themeToggle.textContent = '🌙';
+                themeToggle.title = '切换到浅色模式';
+            }
+        }
+
+        function initTheme() {
+            let saved = null;
+            try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
+            if (saved === 'light' || saved === 'dark') {
+                applyTheme(saved);
+            } else {
+                const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+                applyTheme(prefersLight ? 'light' : 'dark');
+            }
+        }
+
+        function toggleTheme() {
+            const isLight = htmlEl.getAttribute('data-theme') === 'light';
+            const next = isLight ? 'dark' : 'light';
+            applyTheme(next);
+            try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+        }
+
+        themeToggle.addEventListener('click', toggleTheme);
+        initTheme();
+
+        // ===================== 状态 =====================
+        let scene, camera, renderer, controls, composer, bloomPass, chromaPass;
+        let animationId = null;
+        // 两个 InstancedMesh：分别承载长方体与正方体
+        let boxInstancedMesh = null;   // 长方体
+        let cubeInstancedMesh = null;  // 正方体
+        let torusKnotMesh = null, particles = null, particleTrails = null;
+        let time = 0;
+
+        // 实例总数（长方体 + 正方体），按约 1:1 分配
+        const TOTAL_INSTANCE_COUNT = 25000;
+        const BOX_COUNT = Math.floor(TOTAL_INSTANCE_COUNT / 2);      // 12500 长方体
+        const CUBE_COUNT = TOTAL_INSTANCE_COUNT - BOX_COUNT;          // 12500 正方体
+        const PARTICLE_COUNT = 20000;
+        const TRAIL_COUNT = 8000;
+
+        // 强制深色背景
+        const SCENE_BG = 0x05060a;
+        const SCENE_FOG = 0x05060a;
+
+        const threeContainer = document.getElementById('three-container');
+        const mushroomIframe = document.getElementById('mushroomIframe');
+        const btnSelf = document.getElementById('btnSelf');
+        const btnMushroom = document.getElementById('btnMushroom');
+        const topHint = document.getElementById('topHint');
+        const perfBadge = document.getElementById('perfBadge');
+        const liveFpsEl = document.getElementById('liveFps');
+        const renderResEl = document.getElementById('renderRes');
+        const fpsValueEl = document.getElementById('fpsValue');
+        const instValueEl = document.getElementById('instValue');
+
+        let frameCount = 0;
+        let lastFpsTime = performance.now();
+        let currentFps = 0;
+
+        // ===================== 自定义着色器 =====================
+        const ChromaticShader = {
+            uniforms: {
+                tDiffuse: { value: null },
+                amount: { value: 0.0035 },
+                time: { value: 0.0 }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform sampler2D tDiffuse;
+                uniform float amount;
+                uniform float time;
+                varying vec2 vUv;
+                void main() {
+                    vec2 uv = vUv;
+                    vec2 center = vec2(0.5);
+                    float dist = length(uv - center);
+                    vec2 dir = normalize(uv - center + 0.0001);
+                    float offset = amount * (0.5 + dist);
+                    float r = texture2D(tDiffuse, uv + dir * offset).r;
+                    float g = texture2D(tDiffuse, uv).g;
+                    float b = texture2D(tDiffuse, uv - dir * offset).b;
+                    vec3 col = vec3(r, g, b);
+                    float vig = smoothstep(0.85, 0.25, dist);
+                    col *= vig;
+                    // 扫描线强度降低
+                    col += sin(uv.y * 800.0 + time * 6.0) * 0.006;
+                    gl_FragColor = vec4(col, 1.0);
+                }
+            `
+        };
+
+        // ===================== 生成实例状态 =====================
+        function createInstanceStates(count, isBox) {
+            const states = [];
+            const dummy = new THREE.Object3D();
+            for (let i = 0; i < count; i++) {
+                const radius = 5 + Math.pow(Math.random(), 0.7) * 22;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos((Math.random() * 2) - 1);
+
+                const x = radius * Math.sin(phi) * Math.cos(theta);
+                const y = radius * Math.sin(phi) * Math.sin(theta);
+                const z = radius * Math.cos(phi);
+
+                // 长方体和正方体使用不同的随机缩放策略
+                let scaleX, scaleY, scaleZ;
+                if (isBox) {
+                    // 长方体：至少有一轴明显更长
+                    const base = 0.6 + Math.random() * 1.6;
+                    const elongated = 1.5 + Math.random() * 2.5;
+                    const axis = Math.floor(Math.random() * 3);
+                    scaleX = base; scaleY = base; scaleZ = base;
+                    if (axis === 0) scaleX *= elongated;
+                    else if (axis === 1) scaleY *= elongated;
+                    else scaleZ *= elongated;
+                } else {
+                    // 正方体：三轴等比
+                    const s = 0.6 + Math.random() * 2.2;
+                    scaleX = s; scaleY = s; scaleZ = s;
+                }
+
+                dummy.position.set(x, y, z);
+                dummy.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+                dummy.scale.set(scaleX, scaleY, scaleZ);
+                dummy.updateMatrix();
+
+                states.push({
+                    matrix: dummy.matrix.clone(),
+                    baseX: x, baseY: y, baseZ: z,
+                    scaleX, scaleY, scaleZ,
+                    phase: Math.random() * Math.PI * 2,
+                    rotSpeedX: (Math.random() - 0.5) * 0.03,
+                    rotSpeedY: (Math.random() - 0.5) * 0.03,
+                    rotSpeedZ: (Math.random() - 0.5) * 0.03,
+                    pulseSpeed: 0.5 + Math.random() * 2.5,
+                    waveAmp: 0.5 + Math.random() * 1.5
+                });
+            }
+            return states;
+        }
+
+        // ===================== 初始化场景 =====================
+        function initScene() {
+            if (scene) return;
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(SCENE_BG);
+            scene.fog = new THREE.FogExp2(SCENE_FOG, 0.0035);
+
+            camera = new THREE.PerspectiveCamera(65, threeContainer.clientWidth / threeContainer.clientHeight, 0.1, 2000);
+            camera.position.set(14, 9, 24);
+            camera.lookAt(0, 0, 0);
+
+            renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance", stencil: false, depth: true });
+            renderer.setSize(threeContainer.clientWidth, threeContainer.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.5));
+            renderer.shadowMap.enabled = false;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            // 降低整体曝光
+            renderer.toneMappingExposure = 0.75;
+            threeContainer.appendChild(renderer.domElement);
+
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.autoRotate = true;
+            controls.autoRotateSpeed = 0.6;
+            controls.enableZoom = true;
+            controls.target.set(0, 0, 0);
+
+            // ===== 后处理：大幅削弱 Bloom 亮度 =====
+            const renderPass = new RenderPass(scene, camera);
+            bloomPass = new UnrealBloomPass(
+                new THREE.Vector2(threeContainer.clientWidth, threeContainer.clientHeight),
+                0.35,   // strength：1.2 → 0.35，大幅降低
+                0.5,    // radius
+                0.4     // threshold：提高阈值，只有最亮的部分才发光
+            );
+            chromaPass = new ShaderPass(ChromaticShader);
+            chromaPass.renderToScreen = true;
+
+            composer = new EffectComposer(renderer);
+            composer.addPass(renderPass);
+            composer.addPass(bloomPass);
+            composer.addPass(chromaPass);
+
+            // ===== 长方体实例 =====
+            const boxGeo = new THREE.BoxGeometry(1, 1, 1); // 基础单位立方体，通过 scale 变长方体
+            const boxMat = new THREE.MeshStandardMaterial({
+                color: 0x2a5a8a,         // 比之前更暗的蓝色
+                emissive: 0x040810,      // 自发光几乎为 0
+                roughness: 0.45,
+                metalness: 0.65,
+                flatShading: false,
+                envMapIntensity: 0.4
+            });
+
+            boxInstancedMesh = new THREE.InstancedMesh(boxGeo, boxMat, BOX_COUNT);
+            boxInstancedMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+            const boxStates = createInstanceStates(BOX_COUNT, true);
+            boxInstancedMesh.userData.states = boxStates;
+            const dummy = new THREE.Object3D();
+            for (let i = 0; i < BOX_COUNT; i++) {
+                const s = boxStates[i];
+                dummy.position.set(s.baseX, s.baseY, s.baseZ);
+                dummy.rotation.set(0, 0, 0);
+                dummy.scale.set(s.scaleX, s.scaleY, s.scaleZ);
+                dummy.updateMatrix();
+                boxInstancedMesh.setMatrixAt(i, dummy.matrix);
+            }
+            boxInstancedMesh.instanceMatrix.needsUpdate = true;
+            scene.add(boxInstancedMesh);
+
+            // ===== 正方体实例 =====
+            const cubeGeo = new THREE.BoxGeometry(1, 1, 1);
+            const cubeMat = new THREE.MeshStandardMaterial({
+                color: 0x3a6a4a,         // 暗青绿色，与长方体区分
+                emissive: 0x040810,
+                roughness: 0.4,
+                metalness: 0.7,
+                flatShading: false,
+                envMapIntensity: 0.4
+            });
+
+            cubeInstancedMesh = new THREE.InstancedMesh(cubeGeo, cubeMat, CUBE_COUNT);
+            cubeInstancedMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+            const cubeStates = createInstanceStates(CUBE_COUNT, false);
+            cubeInstancedMesh.userData.states = cubeStates;
+            for (let i = 0; i < CUBE_COUNT; i++) {
+                const s = cubeStates[i];
+                dummy.position.set(s.baseX, s.baseY, s.baseZ);
+                dummy.rotation.set(0, 0, 0);
+                dummy.scale.set(s.scaleX, s.scaleY, s.scaleZ);
+                dummy.updateMatrix();
+                cubeInstancedMesh.setMatrixAt(i, dummy.matrix);
+            }
+            cubeInstancedMesh.instanceMatrix.needsUpdate = true;
+            scene.add(cubeInstancedMesh);
+
+            // ===== 中心纽结（降低亮度） =====
+            const knotGeo = new THREE.TorusKnotGeometry(6, 1.6, 400, 64, 3, 7);
+            const knotMat = new THREE.MeshStandardMaterial({
+                color: 0x1a3a5a,         // 暗蓝
+                emissive: 0x03060c,      // 自发光极低
+                roughness: 0.3,
+                metalness: 0.9
+            });
+            torusKnotMesh = new THREE.Mesh(knotGeo, knotMat);
+            scene.add(torusKnotMesh);
+
+            // ===== 粒子（降低亮度与透明度） =====
+            const particleGeo = new THREE.BufferGeometry();
+            const positions = new Float32Array(PARTICLE_COUNT * 3);
+            const colors = new Float32Array(PARTICLE_COUNT * 3);
+
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                const r = 15 + Math.random() * 60;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos((Math.random() * 2) - 1);
+                positions[i*3] = r * Math.sin(phi) * Math.cos(theta);
+                positions[i*3+1] = r * Math.sin(phi) * Math.sin(theta) * 0.6;
+                positions[i*3+2] = r * Math.cos(phi);
+
+                // 降低亮度与饱和度
+                const color = new THREE.Color().setHSL(Math.random() * 0.3 + 0.55, 0.6, 0.35 + Math.random() * 0.15);
+                colors[i*3] = color.r;
+                colors[i*3+1] = color.g;
+                colors[i*3+2] = color.b;
+            }
+
+            particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const particleMat = new THREE.PointsMaterial({
+                size: 0.2,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.55,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                sizeAttenuation: true
+            });
+
+            particles = new THREE.Points(particleGeo, particleMat);
+            scene.add(particles);
+
+            // ===== 拖尾粒子（降低亮度） =====
+            const trailGeo = new THREE.BufferGeometry();
+            const trailPos = new Float32Array(TRAIL_COUNT * 3);
+            const trailCol = new Float32Array(TRAIL_COUNT * 3);
+            for (let i = 0; i < TRAIL_COUNT; i++) {
+                const r = 4 + Math.random() * 14;
+                const a = Math.random() * Math.PI * 2;
+                trailPos[i*3] = Math.cos(a) * r;
+                trailPos[i*3+1] = (Math.random() - 0.5) * 6;
+                trailPos[i*3+2] = Math.sin(a) * r;
+                const c = new THREE.Color().setHSL(Math.random() * 0.2 + 0.65, 0.7, 0.4);
+                trailCol[i*3] = c.r; trailCol[i*3+1] = c.g; trailCol[i*3+2] = c.b;
+            }
+            trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPos, 3));
+            trailGeo.setAttribute('color', new THREE.BufferAttribute(trailCol, 3));
+            const trailMat = new THREE.PointsMaterial({
+                size: 0.25, vertexColors: true, transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true
+            });
+            particleTrails = new THREE.Points(trailGeo, trailMat);
+            scene.add(particleTrails);
+
+            // ===== 光源（大幅降低强度） =====
+            scene.add(new THREE.AmbientLight(0x101828, 0.35));
+
+            const lightColors = [0xaa3344, 0x33aa66, 0x3366aa, 0xaa7733, 0x7733aa, 0x33aaaa];
+            for (let i = 0; i < 6; i++) {
+                const light = new THREE.PointLight(lightColors[i], 0.6 + Math.random() * 0.4, 70);
+                const ang = (i / 6) * Math.PI * 2;
+                light.position.set(Math.cos(ang) * 15, (Math.random() - 0.5) * 20, Math.sin(ang) * 15);
+                scene.add(light);
+            }
+
+            const dirLight = new THREE.DirectionalLight(0x8899bb, 0.35);
+            dirLight.position.set(10, 30, 10);
+            scene.add(dirLight);
+
+            // ===== 星空穹顶（更暗） =====
+            const skyGeo = new THREE.SphereGeometry(400, 64, 64);
+            const skyMat = new THREE.MeshBasicMaterial({
+                color: 0x030408, side: THREE.BackSide, wireframe: true, transparent: true, opacity: 0.08
+            });
+            const skyDome = new THREE.Mesh(skyGeo, skyMat);
+            scene.add(skyDome);
+
+            animate();
+        }
+
+        // ===================== 动画 =====================
+        function animate() {
+            if (animationId) cancelAnimationFrame(animationId);
+
+            const loop = () => {
+                animationId = requestAnimationFrame(loop);
+                if (!boxInstancedMesh || !cubeInstancedMesh || !scene) return;
+
+                time += 0.012;
+
+                const dummy = new THREE.Object3D();
+
+                // ---- 更新长方体 ----
+                {
+                    const states = boxInstancedMesh.userData.states;
+                    const count = boxInstancedMesh.count;
+                    for (let i = 0; i < count; i++) {
+                        const s = states[i];
+                        const wave = Math.sin(time * s.pulseSpeed + s.phase) * s.waveAmp;
+                        const wave2 = Math.cos(time * s.pulseSpeed * 0.7 + s.phase * 1.3) * s.waveAmp * 0.7;
+
+                        dummy.position.set(
+                            s.baseX + wave,
+                            s.baseY + wave2,
+                            s.baseZ + Math.sin(time * 1.5 + s.phase * 2) * 0.8
+                        );
+                        dummy.rotation.x = time * s.rotSpeedX * 20 + s.phase;
+                        dummy.rotation.y = time * s.rotSpeedY * 20 + s.phase * 1.5;
+                        dummy.rotation.z = time * s.rotSpeedZ * 20 + s.phase * 2;
+                        // 长方体沿各轴脉动缩放
+                        const pulse = 1 + Math.sin(time * 2.5 + s.phase) * 0.12;
+                        dummy.scale.set(s.scaleX * pulse, s.scaleY * pulse, s.scaleZ * pulse);
+
+                        dummy.updateMatrix();
+                        boxInstancedMesh.setMatrixAt(i, dummy.matrix);
+                    }
+                    boxInstancedMesh.instanceMatrix.needsUpdate = true;
+                }
+
+                // ---- 更新正方体 ----
+                {
+                    const states = cubeInstancedMesh.userData.states;
+                    const count = cubeInstancedMesh.count;
+                    for (let i = 0; i < count; i++) {
+                        const s = states[i];
+                        const wave = Math.sin(time * s.pulseSpeed + s.phase) * s.waveAmp;
+                        const wave2 = Math.cos(time * s.pulseSpeed * 0.7 + s.phase * 1.3) * s.waveAmp * 0.7;
+
+                        dummy.position.set(
+                            s.baseX + wave,
+                            s.baseY + wave2,
+                            s.baseZ + Math.sin(time * 1.5 + s.phase * 2) * 0.8
+                        );
+                        dummy.rotation.x = time * s.rotSpeedX * 20 + s.phase;
+                        dummy.rotation.y = time * s.rotSpeedY * 20 + s.phase * 1.5;
+                        dummy.rotation.z = time * s.rotSpeedZ * 20 + s.phase * 2;
+                        // 正方体等比脉动
+                        const pulse = 1 + Math.sin(time * 2.5 + s.phase) * 0.15;
+                        dummy.scale.setScalar(s.scaleX * pulse);
+
+                        dummy.updateMatrix();
+                        cubeInstancedMesh.setMatrixAt(i, dummy.matrix);
+                    }
+                    cubeInstancedMesh.instanceMatrix.needsUpdate = true;
+                }
+
+                // ---- 中心纽结 ----
+                if (torusKnotMesh) {
+                    torusKnotMesh.rotation.x = time * 0.15;
+                    torusKnotMesh.rotation.y = time * 0.25;
+                    torusKnotMesh.rotation.z = time * 0.1;
+                    const s = 1 + Math.sin(time * 1.8) * 0.08;
+                    torusKnotMesh.scale.set(s, 1 / s, s);
+                }
+
+                if (particles) {
+                    particles.rotation.y += 0.0008;
+                    particles.rotation.x += 0.0003;
+                }
+                if (particleTrails) {
+                    particleTrails.rotation.y -= 0.004;
+                    particleTrails.rotation.z += 0.0015;
+                }
+
+                // ---- 后处理动画（Bloom 保持低强度） ----
+                if (chromaPass) {
+                    chromaPass.uniforms.time.value = time;
+                    chromaPass.uniforms.amount.value = 0.0015 + Math.sin(time * 0.5) * 0.001;
+                }
+                if (bloomPass) {
+                    bloomPass.strength = 0.28 + Math.sin(time * 0.7) * 0.08;
+                }
+
+                controls.update();
+                composer.render();
+
+                // FPS 统计
+                frameCount++;
+                const now = performance.now();
+                if (now - lastFpsTime >= 500) {
+                    currentFps = Math.round((frameCount * 1000) / (now - lastFpsTime));
+                    frameCount = 0;
+                    lastFpsTime = now;
+
+                    if (liveFpsEl) liveFpsEl.textContent = currentFps + ' FPS';
+                    if (fpsValueEl) fpsValueEl.textContent = currentFps;
+                    if (instValueEl) instValueEl.textContent = TOTAL_INSTANCE_COUNT.toLocaleString();
+                    const w = renderer.domElement.width;
+                    const h = renderer.domElement.height;
+                    if (renderResEl) renderResEl.textContent = `${w}×${h}`;
+                }
+            };
+            loop();
+        }
+
+        function stopAnimation() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+        }
+
+        // ===================== 硬件信息 =====================
+        async function displayHardwareInfo() {
+            const osVersionEl = document.getElementById('osVersion');
+            const cpuInfoEl = document.getElementById('cpuInfo');
+            const gpuInfoEl = document.getElementById('gpuInfo');
+            const gpuVendorEl = document.getElementById('gpuVendor');
+            const memoryInfoEl = document.getElementById('memoryInfo');
+            const platformEl = document.getElementById('platformInfo');
+            const browserInfoEl = document.getElementById('browserInfo');
+            const webglVersionEl = document.getElementById('webglVersion');
+            const maxTextureEl = document.getElementById('maxTexture');
+            const maxViewportEl = document.getElementById('maxViewport');
+            const screenResEl = document.getElementById('screenRes');
+            const pixelRatioEl = document.getElementById('pixelRatio');
+            const refreshRateEl = document.getElementById('refreshRate');
+
+            const ua = navigator.userAgent;
+            let osVersionText = '未知';
+            const ntMatch = ua.match(/Windows NT ([\d.]+)/);
+            if (ntMatch) {
+                const ntVersion = parseFloat(ntMatch[1]);
+                if (ntVersion >= 10.0) {
+                    if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+                        try {
+                            const highEntropy = await navigator.userAgentData.getHighEntropyValues(['platformVersion']);
+                            const pv = highEntropy.platformVersion;
+                            if (pv) {
+                                const major = parseInt(pv.split('.')[0], 10);
+                                osVersionText = major >= 13 ? 'Windows 11' : (major > 0 ? 'Windows 10' : 'Windows 10 (或更早)');
+                            } else {
+                                osVersionText = 'Windows 10/11 (无法区分)';
+                            }
+                        } catch (e) {
+                            osVersionText = 'Windows 10/11 (检测受限)';
+                        }
+                    } else {
+                        osVersionText = 'Windows 10/11 (需 Chromium 内核区分)';
+                    }
+                } else if (ntVersion >= 6.3) {
+                    osVersionText = ntVersion === 6.3 ? 'Windows 8.1' :
+                                     ntVersion === 6.2 ? 'Windows 8' :
+                                     ntVersion === 6.1 ? 'Windows 7' : `Windows NT ${ntMatch[1]}`;
+                } else {
+                    osVersionText = `Windows NT ${ntMatch[1]}`;
+                }
+            } else if (ua.includes('Mac OS X')) {
+                const m = ua.match(/Mac OS X ([\d_]+)/);
+                osVersionText = m ? `macOS ${m[1].replace(/_/g, '.')}` : 'macOS';
+            } else if (ua.includes('Linux')) {
+                osVersionText = 'Linux';
+            }
+            osVersionEl.textContent = osVersionText;
+
+            platformEl.textContent = navigator.platform || '未知';
+
+            let browserName = '未知', browserVer = '';
+            if (ua.includes('Edg/')) { browserName = 'Edge'; browserVer = ua.match(/Edg\/([\d.]+)/)?.[1] || ''; }
+            else if (ua.includes('Chrome/')) { browserName = 'Chrome'; browserVer = ua.match(/Chrome\/([\d.]+)/)?.[1] || ''; }
+            else if (ua.includes('Firefox/')) { browserName = 'Firefox'; browserVer = ua.match(/Firefox\/([\d.]+)/)?.[1] || ''; }
+            else if (ua.includes('Safari/') && !ua.includes('Chrome')) { browserName = 'Safari'; browserVer = ua.match(/Version\/([\d.]+)/)?.[1] || ''; }
+            browserInfoEl.textContent = browserVer ? `${browserName} ${browserVer}` : browserName;
+
+            const cores = navigator.hardwareConcurrency || '未知';
+            cpuInfoEl.textContent = cores !== '未知' ? `${cores} 核` : '未知';
+
+            memoryInfoEl.textContent = navigator.deviceMemory ? `约 ${navigator.deviceMemory} GB` : 'API 不支持';
+
+            if (screenResEl) screenResEl.textContent = `${window.screen.width} × ${window.screen.height}`;
+            if (pixelRatioEl) pixelRatioEl.textContent = window.devicePixelRatio?.toFixed(2) || '1.00';
+
+            if (refreshRateEl) {
+                let frames = 0;
+                const start = performance.now();
+                let rafId;
+                const sample = () => {
+                    frames++;
+                    const elapsed = performance.now() - start;
+                    if (elapsed < 500) {
+                        rafId = requestAnimationFrame(sample);
+                    } else {
+                        const hz = Math.round((frames * 1000) / elapsed);
+                        refreshRateEl.textContent = `~${hz} Hz`;
+                        cancelAnimationFrame(rafId);
+                    }
+                };
+                rafId = requestAnimationFrame(sample);
+            }
+
+            try {
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl2') || canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (gl) {
+                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                    if (debugInfo) {
+                        const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) || '';
+                        const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || '';
+                        let gpuName = renderer.replace(/ANGLE \(|Direct3D11|vs_5_0|ps_5_0|\)/g, '').trim();
+                        if (gpuName.length > 30) gpuName = gpuName.substring(0, 28) + '...';
+                        gpuInfoEl.textContent = gpuName || 'WebGL 可用';
+                        gpuVendorEl.textContent = vendor || '未知';
+                    } else {
+                        gpuInfoEl.textContent = '隐私扩展不可用';
+                        gpuVendorEl.textContent = '隐私扩展不可用';
+                    }
+                    webglVersionEl.textContent = gl.getParameter(gl.VERSION) || '未知';
+                    const maxTex = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+                    maxTextureEl.textContent = maxTex ? maxTex + ' px' : '未知';
+                    const maxVp = gl.getParameter(gl.MAX_VIEWPORT_DIMS);
+                    maxViewportEl.textContent = maxVp ? `${maxVp[0]} × ${maxVp[1]}` : '未知';
+                } else {
+                    gpuInfoEl.textContent = 'WebGL 不可用';
+                    gpuVendorEl.textContent = 'WebGL 不可用';
+                    webglVersionEl.textContent = 'WebGL 不可用';
+                    maxTextureEl.textContent = '—';
+                    maxViewportEl.textContent = '—';
+                }
+            } catch (e) {
+                gpuInfoEl.textContent = '检测失败';
+            }
+        }
+
+        // ===================== 模式切换 =====================
+        function setMode(mode) {
+            if (mode === 'self') {
+                btnSelf.classList.add('active');
+                btnMushroom.classList.remove('active');
+                threeContainer.classList.remove('hidden');
+                mushroomIframe.classList.remove('active');
+                if (mushroomIframe.src !== 'about:blank') mushroomIframe.src = 'about:blank';
+                perfBadge.classList.add('visible');
+                topHint.classList.remove('warning');
+                topHint.textContent = '💡 拖动鼠标旋转视角 · 自研压力测试：12,500 长方体 + 12,500 正方体 + 20,000 粒子 + 8,000 拖尾 + 后处理，考验 GPU 填充率与算力';
+
+                if (!scene) {
+                    initScene();
+                } else {
+                    if (!animationId) animate();
+                }
+            } else {
+                btnSelf.classList.remove('active');
+                btnMushroom.classList.add('active');
+                stopAnimation();
+                threeContainer.classList.add('hidden');
+                mushroomIframe.classList.add('active');
+                perfBadge.classList.remove('visible');
+                mushroomIframe.src = 'https://toolwa.com/vsbm/';
+                topHint.classList.add('warning');
+                topHint.textContent = '🍄 毒蘑菇测试加载中 · 该测试会让 GPU 长时间满载，性能较弱的设备请谨慎使用，若页面空白请检查网络';
+            }
+        }
+
+        // ===================== 初始化 =====================
+        window.addEventListener('load', () => {
+            displayHardwareInfo();
+            setMode('self');
+
+            btnSelf.addEventListener('click', () => setMode('self'));
+            btnMushroom.addEventListener('click', () => setMode('mushroom'));
+
+            window.addEventListener('resize', () => {
+                if (scene && camera && renderer && composer) {
+                    const w = threeContainer.clientWidth;
+                    const h = threeContainer.clientHeight;
+                    camera.aspect = w / h;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(w, h);
+                    composer.setSize(w, h);
+                    if (bloomPass) bloomPass.setSize(w, h);
+                }
+            });
+        });
+
+        window.addEventListener('beforeunload', () => {
+            stopAnimation();
+            if (renderer) renderer.dispose();
+            if (composer) composer.dispose?.();
+        });
+    </script>
+</body>
+</html>

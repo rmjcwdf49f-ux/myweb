@@ -2,10 +2,11 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>入卷 · 方块小筑</title>
 <style>
-:root {
+/* ========== 主题配色 (与主页完全同步) ========== */
+:root, html[data-theme="light"] {
   --paper: #f5ecd7;
   --paper-deep: #ede3cb;
   --ink: #2c261e;
@@ -14,11 +15,37 @@
   --line: #d4c8b0;
   --vermilion: #b83a2e;
   --gold: #a67c3d;
-  --surface: rgba(245,236,215,0.94);
+  --surface: rgba(245,236,215,0.92);
   --surface-solid: #f5ecd7;
   --shadow: 0 16px 48px rgba(60,48,32,0.13);
   --font-serif: 'Noto Serif SC', 'Songti SC', 'SimSun', Georgia, serif;
   --font-sans: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+html[data-theme="qingyun"] {
+  --paper: #eef3ec;
+  --paper-deep: #e2ebe0;
+  --ink: #2a3b2e;
+  --ink-muted: #5a6b5e;
+  --ink-subtle: #8a9b8e;
+  --line: #c2d1c4;
+  --vermilion: #3a7a4a;
+  --gold: #6a8a5a;
+  --surface: rgba(238,243,236,0.92);
+  --surface-solid: #eef3ec;
+  --shadow: 0 16px 48px rgba(40,60,40,0.13);
+}
+html[data-theme="qinghua"] {
+  --paper: #f0f4f8;
+  --paper-deep: #e6ebf2;
+  --ink: #1e2a3a;
+  --ink-muted: #4a5a6a;
+  --ink-subtle: #7a8a9a;
+  --line: #b8c8d8;
+  --vermilion: #2a4a7a;
+  --gold: #4a6a8a;
+  --surface: rgba(240,244,248,0.92);
+  --surface-solid: #f0f4f8;
+  --shadow: 0 16px 48px rgba(30,40,60,0.13);
 }
 html[data-theme="dark"] {
   --paper: #1a1712;
@@ -47,6 +74,7 @@ html, body {
     radial-gradient(ellipse at 85% 90%, rgba(180,150,110,0.08) 0%, transparent 50%);
   transition: background-color .35s ease, color .35s ease;
   -webkit-font-smoothing: antialiased;
+  touch-action: manipulation;
 }
 html[data-theme="dark"] body {
   background-image:
@@ -54,58 +82,115 @@ html[data-theme="dark"] body {
     radial-gradient(ellipse at 20% 10%, rgba(160,120,60,0.05) 0%, transparent 55%);
 }
 
+/* ========== 壁纸与视频层 ========== */
 #wallpaper {
   position: fixed; inset:0; z-index:0;
   background-size: cover; background-position: center;
-  background-repeat: no-repeat; opacity: .14; pointer-events:none;
-  transition: opacity .4s;
+  background-repeat: no-repeat;
+  opacity: 0.14; pointer-events: none;
+  transition: opacity .3s ease;
 }
 html[data-theme="dark"] #wallpaper { opacity: .08; }
 #wallpaperVideo {
   position: fixed; inset:0; z-index:0;
-  width:100%; height:100%; object-fit:cover;
-  opacity:.12; pointer-events:none; display:none;
+  width:100%; height:100%; object-fit: cover;
+  opacity: .12; pointer-events: none; display: none;
+  transition: opacity .3s ease;
 }
-html[data-theme="dark"] #wallpaperVideo { opacity:.06; }
+html[data-theme="dark"] #wallpaperVideo { opacity: .06; }
 
+/* ========== 页面布局 ========== */
 .page {
-  position:relative; z-index:1; min-height:100vh;
+  position: relative; z-index:1; min-height:100vh;
   display:flex; flex-direction:column;
+  pointer-events: none;
 }
+.page > * { pointer-events: auto; }
 
 .topbar {
   display:flex; align-items:center; justify-content:space-between;
-  padding: 18px clamp(20px,5vw,48px);
+  padding: 16px clamp(16px,4vw,48px);
   border-bottom:1px solid var(--line);
   background: var(--surface);
   position:sticky; top:0; z-index:200;
 }
-.brand { font-size:clamp(18px,2.2vw,24px); font-weight:500; letter-spacing:.18em; }
+.brand { font-size:clamp(17px,2.1vw,23px); font-weight:500; letter-spacing:.14em; }
 .brand em { font-style:normal; color:var(--vermilion); }
 .back-link {
   font-size:13px; color:var(--ink-muted); text-decoration:none;
   letter-spacing:.12em; font-family:var(--font-sans);
-  border-bottom:1px solid transparent; transition:all .22s;
+  border:1px solid var(--line);
+  padding:7px 14px;
+  transition:all .25s;
 }
-.back-link:hover { color:var(--vermilion); border-bottom-color:var(--vermilion); }
+.back-link:hover { border-color:var(--vermilion); color:var(--vermilion); }
 
 .main {
-  flex:1; display:flex; align-items:center; justify-content:center;
-  padding: 48px clamp(20px,5vw,48px);
+  flex:1; position: relative;
 }
 
-.auth-box {
-  width:100%; max-width:440px;
-  border:1px solid var(--line);
-  background: var(--surface);
-  padding: clamp(28px,5vw,44px) clamp(24px,5vw,40px);
-  position:relative;
+/* ========== 可拖动窗口 ========== */
+.win {
+  position: fixed;
+  background: var(--surface-solid);
+  border: 1px solid var(--line);
   box-shadow: var(--shadow);
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  min-width: 280px;
+  max-width: 94vw;
+  font-family: var(--font-serif);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
-.auth-box::before {
-  content:''; position:absolute; inset:8px;
-  border:1px solid var(--line); pointer-events:none; opacity:.55;
+.win::before {
+  content:''; position:absolute; inset:5px;
+  border:1px solid var(--line); pointer-events:none; opacity:.5; z-index:0;
 }
+
+.win-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 13px;
+  border-bottom:1px solid var(--line);
+  cursor: grab; user-select:none;
+  background: var(--paper-deep);
+  position:relative; z-index:2;
+  touch-action: none;
+}
+.win-header:active { cursor: grabbing; }
+.win-title {
+  font-size:13px; letter-spacing:.14em; font-weight:500;
+  color: var(--ink);
+}
+.win-actions { display:flex; gap:2px; align-items:center; flex-shrink:0; }
+.win-btn {
+  border:none; background:transparent;
+  color: var(--ink-muted); font-size:18px; /* 稍微调大字体让横杠更明显 */
+  line-height:1; cursor:pointer; padding:0 6px;
+  transition: color .2s;
+  font-family: var(--font-sans);
+}
+.win-btn:hover { color: var(--vermilion); }
+
+.win-body {
+  padding: 24px clamp(20px,4vw,36px);
+  position:relative; z-index:1;
+  overflow:auto;
+  flex:1;
+}
+
+.resize-handle {
+  position:absolute; width:16px; height:16px; z-index:10;
+  touch-action: none;
+}
+.rh-tl { top:-2px; left:-2px; cursor:nwse-resize; }
+.rh-tr { top:-2px; right:-2px; cursor:nesw-resize; }
+.rh-bl { bottom:-2px; left:-2px; cursor:nesw-resize; }
+.rh-br { bottom:-2px; right:-2px; cursor:nwse-resize; }
+
+/* ========== 登录表单内容 ========== */
 .auth-title {
   text-align:center; font-size:clamp(23px,3.5vw,30px);
   font-weight:400; letter-spacing:.16em; margin-bottom:8px;
@@ -163,45 +248,15 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
 }
 .hint-box strong { color:var(--ink-muted); font-weight:500; }
 
-/* 可拖动窗口（登录页提示用） */
-.win {
-  position:fixed; background:var(--surface-solid);
-  border:1px solid var(--line); box-shadow:var(--shadow);
-  z-index:900; display:none; flex-direction:column;
-  min-width:260px; max-width:92vw; font-family:var(--font-serif);
-  backdrop-filter:none; -webkit-backdrop-filter:none;
+@media (max-width: 520px) {
+  .win-body { padding: 20px 16px; }
+  .back-link { font-size: 12px; }
 }
-.win::before {
-  content:''; position:absolute; inset:5px;
-  border:1px solid var(--line); pointer-events:none; opacity:.5; z-index:0;
-}
-.win.open { display:flex; }
-.win-header {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:11px 14px; border-bottom:1px solid var(--line);
-  cursor:move; user-select:none; background:var(--paper-deep);
-  position:relative; z-index:2;
-}
-.win-title { font-size:13px; letter-spacing:.14em; font-weight:500; }
-.win-close {
-  border:none; background:transparent; color:var(--ink-muted);
-  font-size:19px; line-height:1; cursor:pointer; padding:0 5px;
-  font-family:var(--font-sans); transition:color .2s;
-}
-.win-close:hover { color:var(--vermilion); }
-.win-body {
-  padding:16px; position:relative; z-index:1; max-height:60vh; overflow:auto;
-}
-
-@media (max-width:520px) {
-  .auth-box { padding:28px 20px; }
-  .back-link { font-size:12px; }
-}
-@media (prefers-reduced-motion: reduce) { * { transition-duration:.01ms !important; } }
 </style>
 </head>
 <body>
 
+<!-- 背景层 -->
 <div id="wallpaper"></div>
 <video id="wallpaperVideo" autoplay muted loop playsinline></video>
 
@@ -211,66 +266,242 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
     <a class="back-link" href="index.html">← 归去</a>
   </header>
 
-  <main class="main">
-    <div class="auth-box">
-      <h1 class="auth-title" id="authTitle">入 卷</h1>
-      <p class="auth-sub" id="authSub">已有名帖 · 请题旧名</p>
-
-      <form id="authForm" autocomplete="off">
-        <div class="field">
-          <label for="username">名号</label>
-          <input type="text" id="username" placeholder="如：松风客" maxlength="20" required>
+  <main class="main" id="mainArea">
+    <!-- 登录窗口 -->
+    <div class="win" id="loginWin" style="width: min(400px, 92vw);">
+      <div class="win-header">
+        <span class="win-title">入卷 · 题名</span>
+        <div class="win-actions">
+          <!-- 修改为横杠 -->
+          <button class="win-btn" id="centerBtn" title="居中归位">—</button>
         </div>
-        <div class="field">
-          <label for="password">密语</label>
-          <input type="password" id="password" placeholder="至少 4 位" minlength="4" required>
+      </div>
+      <div class="win-body">
+        <h1 class="auth-title" id="authTitle">入 卷</h1>
+        <p class="auth-sub" id="authSub">已有名帖 · 请题旧名</p>
+
+        <form id="authForm" autocomplete="off">
+          <div class="field">
+            <label for="username">名号</label>
+            <input type="text" id="username" placeholder="如：松风客" maxlength="20" required>
+          </div>
+          <div class="field">
+            <label for="password">密语</label>
+            <input type="password" id="password" placeholder="至少 4 位" minlength="4" required>
+          </div>
+          <button type="submit" class="auth-btn" id="submitBtn">题 名 入 卷</button>
+        </form>
+
+        <div class="msg" id="msg"></div>
+
+        <div class="switch-line">
+          <span id="switchText">初来此地？</span>
+          <a id="switchMode">另立新名</a>
         </div>
-        <button type="submit" class="auth-btn" id="submitBtn">题 名 入 卷</button>
-      </form>
 
-      <div class="msg" id="msg"></div>
-
-      <div class="switch-line">
-        <span id="switchText">初来此地？</span>
-        <a id="switchMode">另立新名</a>
+        <div class="hint-box">
+          <strong>说明</strong><br>
+          纯前端 · 名号与密语摘要仅存本地浏览器。密语以 SHA-256 摘要保存，原文不落盘。清空浏览器数据即散卷。
+        </div>
       </div>
-
-      <div class="hint-box">
-        <strong>说明</strong><br>
-        纯前端 · 名号与密语摘要仅存本地浏览器。密语以 SHA-256 摘要保存，原文不落盘。清空浏览器数据即散卷。
-      </div>
+      <!-- 四角缩放手柄 -->
+      <div class="resize-handle rh-tl"></div>
+      <div class="resize-handle rh-tr"></div>
+      <div class="resize-handle rh-bl"></div>
+      <div class="resize-handle rh-br"></div>
     </div>
   </main>
-</div>
-
-<!-- 提示窗口 -->
-<div class="win" id="infoWin" style="width:min(320px,88vw);">
-  <div class="win-header">
-    <span class="win-title">卷中消息</span>
-    <button class="win-close" data-close="infoWin">×</button>
-  </div>
-  <div class="win-body" id="infoWinBody" style="font-size:13px;line-height:2;color:var(--ink-muted);">—</div>
 </div>
 
 <script>
 (function () {
   const html = document.documentElement;
 
-  /* ---- 主题 & 壁纸恢复 ---- */
-  function applyMode(mode) { html.dataset.theme = mode === 'dark' ? 'dark' : 'light'; }
-  const savedMode = localStorage.getItem('moju_theme_mode');
-  applyMode(savedMode === 'dark' || savedMode === 'light' ? savedMode : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+  /* ============================================================
+     1. 同步主页的主题与背景设置
+     ============================================================ */
+  const LS_MODE = 'moju_theme_mode';
+  const LS_WALL_TYPE = 'moju_wall_type';
+  const LS_WALL_DATA = 'moju_wall_data';
+  const LS_VID_VOL = 'moju_vid_vol';
+  const LS_WALL_OPACITY = 'moju_wall_opacity';
 
-  (function restoreWall() {
-    const type = localStorage.getItem('moju_wall_type');
-    const data = localStorage.getItem('moju_wall_data');
-    if (type === 'image' && data) {
-      document.getElementById('wallpaper').style.backgroundImage = `url("${data}")`;
-      document.getElementById('wallpaper').style.display = 'block';
+  const wallpaperDiv = document.getElementById('wallpaper');
+  const wallpaperVideo = document.getElementById('wallpaperVideo');
+
+  function loadMode() {
+    const saved = localStorage.getItem(LS_MODE);
+    if (saved) {
+      html.dataset.theme = saved;
+    } else {
+      html.dataset.theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
-  })();
+  }
+  loadMode();
 
-  /* ---- SHA-256 ---- */
+  function restoreBackground() {
+    const type = localStorage.getItem(LS_WALL_TYPE);
+    const data = localStorage.getItem(LS_WALL_DATA);
+    const vol = localStorage.getItem(LS_VID_VOL);
+    const opa = localStorage.getItem(LS_WALL_OPACITY);
+
+    if (vol !== null) {
+      wallpaperVideo.volume = parseFloat(vol);
+      wallpaperVideo.muted = parseFloat(vol) === 0;
+    } else {
+      wallpaperVideo.muted = true;
+    }
+
+    if (opa !== null) {
+      wallpaperDiv.style.opacity = opa;
+      wallpaperVideo.style.opacity = opa;
+    }
+
+    if (type === 'image' && data) {
+      wallpaperDiv.style.backgroundImage = `url("${data}")`;
+      wallpaperDiv.style.display = 'block';
+    }
+  }
+  restoreBackground();
+
+  /* ============================================================
+     2. 登录窗口拖动与缩放逻辑
+     ============================================================ */
+  const win = document.getElementById('loginWin');
+  const header = win.querySelector('.win-header');
+  const centerBtn = document.getElementById('centerBtn');
+
+  let dragState = null;
+  let resizeState = null;
+
+  // 居中函数
+  function centerWin() {
+    const rect = win.getBoundingClientRect();
+    const left = Math.max(10, (window.innerWidth - rect.width) / 2);
+    const top = Math.max(10, (window.innerHeight - rect.height) / 2 - 20);
+    win.style.left = left + 'px';
+    win.style.top = top + 'px';
+    win.style.right = 'auto';
+    win.style.bottom = 'auto';
+  }
+
+  // 初始居中
+  requestAnimationFrame(centerWin);
+  centerBtn.addEventListener('click', centerWin);
+
+  // 鼠标拖拽
+  header.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    if (e.target.closest('.win-btn')) return;
+    const rect = win.getBoundingClientRect();
+    win.style.left = rect.left + 'px';
+    win.style.top = rect.top + 'px';
+    win.style.right = 'auto';
+    win.style.bottom = 'auto';
+    dragState = { sx: e.clientX, sy: e.clientY, ol: rect.left, ot: rect.top };
+    document.body.style.userSelect = 'none';
+    e.preventDefault();
+  });
+
+  // 触屏拖拽
+  header.addEventListener('touchstart', (e) => {
+    if (e.target.closest('.win-btn')) return;
+    const touch = e.touches[0];
+    const rect = win.getBoundingClientRect();
+    win.style.left = rect.left + 'px';
+    win.style.top = rect.top + 'px';
+    win.style.right = 'auto';
+    win.style.bottom = 'auto';
+    dragState = { sx: touch.clientX, sy: touch.clientY, ol: rect.left, ot: rect.top };
+  }, { passive: true });
+
+  // 四角缩放
+  win.querySelectorAll('.resize-handle').forEach(handle => {
+    handle.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const rect = win.getBoundingClientRect();
+      win.style.left = rect.left + 'px';
+      win.style.top = rect.top + 'px';
+      win.style.right = 'auto';
+      win.style.bottom = 'auto';
+      resizeState = {
+        handle,
+        sx: e.clientX, sy: e.clientY,
+        sw: rect.width, sh: rect.height,
+        sl: rect.left, st: rect.top
+      };
+      document.body.style.userSelect = 'none';
+    });
+
+    handle.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const touch = e.touches[0];
+      const rect = win.getBoundingClientRect();
+      win.style.left = rect.left + 'px';
+      win.style.top = rect.top + 'px';
+      win.style.right = 'auto';
+      win.style.bottom = 'auto';
+      resizeState = {
+        handle,
+        sx: touch.clientX, sy: touch.clientY,
+        sw: rect.width, sh: rect.height,
+        sl: rect.left, st: rect.top
+      };
+    }, { passive: false });
+  });
+
+  function handleMove(clientX, clientY) {
+    if (dragState) {
+      const m = 6;
+      const ml = Math.max(m, window.innerWidth - win.offsetWidth - m);
+      const mt = Math.max(m, window.innerHeight - win.offsetHeight - m);
+      win.style.left = Math.min(Math.max(dragState.ol + clientX - dragState.sx, m), ml) + 'px';
+      win.style.top = Math.min(Math.max(dragState.ot + clientY - dragState.sy, m), mt) + 'px';
+    }
+    if (resizeState) {
+      const { handle, sx, sy, sw, sh, sl, st } = resizeState;
+      const dx = clientX - sx, dy = clientY - sy;
+      const right = handle.classList.contains('rh-tr') || handle.classList.contains('rh-br');
+      const bottom = handle.classList.contains('rh-bl') || handle.classList.contains('rh-br');
+      
+      // 限制最小宽高，防止内容挤压变形
+      const minW = 280;
+      const minH = 300;
+      const nw = Math.max(minW, sw + (right ? dx : -dx));
+      const nh = Math.max(minH, sh + (bottom ? dy : -dy));
+      
+      win.style.width = nw + 'px';
+      win.style.height = nh + 'px';
+      if (!right) win.style.left = (sl + sw - nw) + 'px';
+      if (!bottom) win.style.top = (st + sh - nh) + 'px';
+    }
+  }
+
+  function endMove() {
+    if (dragState || resizeState) {
+      dragState = null;
+      resizeState = null;
+      document.body.style.userSelect = '';
+    }
+  }
+
+  document.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
+  document.addEventListener('touchmove', (e) => {
+    if (dragState || resizeState) {
+      e.preventDefault();
+      handleMove(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: false });
+  document.addEventListener('mouseup', endMove);
+  document.addEventListener('touchend', endMove);
+
+
+  /* ============================================================
+     3. 登录 / 注册逻辑
+     ============================================================ */
   async function sha256(text) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
@@ -356,40 +587,6 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
       submitBtn.disabled = false;
       submitBtn.textContent = originalText;
     }
-  });
-
-  /* ---- 可拖动提示窗口 ---- */
-  const infoWin = document.getElementById('infoWin');
-  (function makeDraggable(win) {
-    const header = win.querySelector('.win-header');
-    let dragging = false, sx = 0, sy = 0, ol = 0, ot = 0;
-    header.addEventListener('mousedown', (e) => {
-      if (e.button !== 0 || e.target.closest('.win-close')) return;
-      dragging = true;
-      const rect = win.getBoundingClientRect();
-      win.style.left = rect.left + 'px';
-      win.style.top = rect.top + 'px';
-      win.style.right = 'auto'; win.style.bottom = 'auto';
-      sx = e.clientX; sy = e.clientY; ol = rect.left; ot = rect.top;
-      document.body.style.userSelect = 'none';
-      e.preventDefault();
-    });
-    window.addEventListener('mousemove', (e) => {
-      if (!dragging) return;
-      const m = 6;
-      const ml = window.innerWidth - win.offsetWidth - m;
-      const mt = window.innerHeight - win.offsetHeight - m;
-      win.style.left = Math.min(Math.max(ol + e.clientX - sx, m), Math.max(m, ml)) + 'px';
-      win.style.top = Math.min(Math.max(ot + e.clientY - sy, m), Math.max(m, mt)) + 'px';
-    });
-    window.addEventListener('mouseup', () => { dragging = false; document.body.style.userSelect = ''; });
-  })(infoWin);
-
-  document.querySelectorAll('[data-close]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const el = document.getElementById(btn.dataset.close);
-      if (el) el.classList.remove('open');
-    });
   });
 
 })();

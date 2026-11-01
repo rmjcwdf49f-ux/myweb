@@ -2,6 +2,12 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<!-- IE 强制重定向检测 -->
+<script>
+  if (/*@cc_on!@*/false || !!document.documentMode) {
+    window.location.href = 'ie.html';
+  }
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>入卷 · 方块小筑</title>
 <style>
@@ -167,7 +173,7 @@ html[data-theme="dark"] #wallpaperVideo { opacity: .06; }
 .win-actions { display:flex; gap:2px; align-items:center; flex-shrink:0; }
 .win-btn {
   border:none; background:transparent;
-  color: var(--ink-muted); font-size:18px; /* 稍微调大字体让横杠更明显 */
+  color: var(--ink-muted); font-size:18px;
   line-height:1; cursor:pointer; padding:0 6px;
   transition: color .2s;
   font-family: var(--font-sans);
@@ -272,7 +278,6 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
       <div class="win-header">
         <span class="win-title">入卷 · 题名</span>
         <div class="win-actions">
-          <!-- 修改为横杠 -->
           <button class="win-btn" id="centerBtn" title="居中归位">—</button>
         </div>
       </div>

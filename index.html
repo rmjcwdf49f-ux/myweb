@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<!-- IE 重定向检测 -->
+<!-- IE 强制重定向检测 -->
 <script>
-  if (window.MSInputMethodContext && document.documentMode || /MSIE (\d+\.\d+);/.test(navigator.userAgent)) {
+  if (/*@cc_on!@*/false || !!document.documentMode) {
     window.location.href = 'ie.html';
   }
 </script>
@@ -519,7 +519,7 @@ input[type=range]:focus { outline: none; }
     <section class="scroll-item fade-item">
       <h2><span class="mark"></span>游艺下载</h2>
       <div class="link-row">
-        <button class="entry-link" data-frame="安卓版 MC 基岩版下载|https://mcarc.top/">安卓版 MC 基岩版下载</button>
+        <button class="entry-link" data-frame="安卓版 MC 基岩版下载|https://mcrac.top/">安卓版 MC 基岩版下载</button>
         <button class="entry-link" data-frame="Windows MC 基岩版下载|https://www.mcappx.com/">Windows MC 基岩版下载</button>
         <button class="entry-link accent" id="btnPcl">PCL 2.13 下载</button>
       </div>
@@ -997,15 +997,18 @@ input[type=range]:focus { outline: none; }
   </div>
 </div>
 
-<!-- M3U8 影音匣 -->
+<!-- M3U8 影音匣 (包含本地视频播放) -->
 <div class="win" id="m3u8Win" style="width:min(860px,92vw);height:min(620px,82vh);">
   <div class="win-header">
     <span class="win-title">M3U8 影音匣</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
-  <div style="padding:8px;border-bottom:1px solid var(--line);background:var(--paper-deep);display:flex;gap:8px;">
-    <input type="text" id="m3u8Input" placeholder="支持 .m3u8 或 .mp4 链接" style="flex:1;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 10px;font-family:var(--font-sans);outline:none;">
-    <button id="m3u8PlayBtn" class="top-btn" style="padding:4px 16px;">播放</button>
+  <div style="padding:8px;border-bottom:1px solid var(--line);background:var(--paper-deep);display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+    <input type="text" id="m3u8Input" placeholder="填网络流径或直链（m3u8/mp4），亦可点右侧择本地影音" style="flex:1;min-width:200px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 10px;font-family:var(--font-sans);outline:none;">
+    <button id="m3u8PlayBtn" class="top-btn" style="padding:4px 16px;">观影</button>
+    <label class="top-btn" style="padding:4px 16px;cursor:pointer;margin:0;">
+      择本地卷轴<input type="file" id="localVideoInput" accept="video/*" style="display:none;">
+    </label>
   </div>
   <div class="win-body" style="display:flex;justify-content:center;align-items:center;background:#000;">
     <video id="m3u8Video" controls style="width:100%;height:100%;max-height:100%;outline:none;"></video>
@@ -1750,11 +1753,12 @@ input[type=range]:focus { outline: none; }
   });
 
   /* ============================================================
-     14. M3U8 影音匣
+     14. M3U8 / 本地视频影音匣
      ============================================================ */
   const m3u8Input = document.getElementById('m3u8Input');
   const m3u8PlayBtn = document.getElementById('m3u8PlayBtn');
   const m3u8Video = document.getElementById('m3u8Video');
+  const localVideoInput = document.getElementById('localVideoInput');
   let hlsInstance = null;
 
   // 动态加载 hls.js 以便播放 m3u8
@@ -1784,13 +1788,33 @@ input[type=range]:focus { outline: none; }
         m3u8Video.src = url;
         m3u8Video.play().catch(() => {});
       } else {
-        alert('当前浏览器不支持 M3U8 播放');
+        alert('此匣不识此物，未可呈映。');
       }
     } else {
       // 直接当普通视频播放
       m3u8Video.src = url;
       m3u8Video.play().catch(() => {});
     }
+  });
+
+  // 播放本地视频
+  localVideoInput.addEventListener('change', function() {
+    const file = this.files && this.files[0];
+    if (!file || !file.type.startsWith('video/')) {
+      if (file) alert('所选之物并非影音卷轴。');
+      return;
+    }
+    
+    if (hlsInstance) {
+      hlsInstance.destroy();
+      hlsInstance = null;
+    }
+    
+    const fileURL = URL.createObjectURL(file);
+    m3u8Video.src = fileURL;
+    m3u8Video.play().catch(() => {});
+    m3u8Input.value = file.name; // 将文件名显示在输入框
+    this.value = '';
   });
 
   /* ============================================================

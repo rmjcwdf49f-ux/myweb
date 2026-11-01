@@ -2,11 +2,17 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<!-- IE 重定向检测 -->
+<script>
+  if (window.MSInputMethodContext && document.documentMode || /MSIE (\d+\.\d+);/.test(navigator.userAgent)) {
+    window.location.href = 'ie.html';
+  }
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>MC 玩家工具站 · 古风版</title>
 <style>
 /* ========== 主题配色 ========== */
-:root {
+:root, html[data-theme="light"] {
   --paper: #f5ecd7;
   --paper-deep: #ede3cb;
   --ink: #2c261e;
@@ -34,23 +40,6 @@ html[data-theme="dark"] {
   --surface-solid: #1a1712;
   --shadow: 0 16px 56px rgba(0,0,0,0.60);
 }
-
-/* 宣纸白（默认） */
-html[data-theme="light"] {
-  --paper: #f5ecd7;
-  --paper-deep: #ede3cb;
-  --ink: #2c261e;
-  --ink-muted: #6b604f;
-  --ink-subtle: #9e9280;
-  --line: #d4c8b0;
-  --vermilion: #b83a2e;
-  --gold: #a67c3d;
-  --surface: rgba(245,236,215,0.92);
-  --surface-solid: #f5ecd7;
-  --shadow: 0 16px 48px rgba(60,48,32,0.13);
-}
-
-/* 青云绿 */
 html[data-theme="qingyun"] {
   --paper: #eef3ec;
   --paper-deep: #e2ebe0;
@@ -64,8 +53,6 @@ html[data-theme="qingyun"] {
   --surface-solid: #eef3ec;
   --shadow: 0 16px 48px rgba(40,60,40,0.13);
 }
-
-/* 青花瓷 */
 html[data-theme="qinghua"] {
   --paper: #f0f4f8;
   --paper-deep: #e6ebf2;
@@ -530,7 +517,7 @@ input[type=range]:focus { outline: none; }
     </div>
 
     <section class="scroll-item fade-item">
-      <h2><span class="mark"></span>游戏下载</h2>
+      <h2><span class="mark"></span>游艺下载</h2>
       <div class="link-row">
         <button class="entry-link" data-frame="安卓版 MC 基岩版下载|https://mcrac.top/">安卓版 MC 基岩版下载</button>
         <button class="entry-link" data-frame="Windows MC 基岩版下载|https://www.mcappx.com/">Windows MC 基岩版下载</button>
@@ -539,7 +526,7 @@ input[type=range]:focus { outline: none; }
     </section>
 
     <section class="scroll-item fade-item">
-      <h2><span class="mark"></span>服务器</h2>
+      <h2><span class="mark"></span>联机之所</h2>
       <div class="link-row">
         <button class="entry-link disabled">加入我的 MC 基岩版服务器（停服）</button>
         <button class="entry-link accent" id="btnJava">MC Java 版服务器</button>
@@ -547,14 +534,14 @@ input[type=range]:focus { outline: none; }
     </section>
 
     <section class="scroll-item fade-item">
-      <h2><span class="mark"></span>网页版</h2>
+      <h2><span class="mark"></span>云游之界</h2>
       <div class="link-row">
         <button class="entry-link accent" id="btnMc">我的世界MCJS · 内嵌窗</button>
       </div>
     </section>
 
     <section class="scroll-item fade-item">
-      <h2><span class="mark"></span>查询与工具</h2>
+      <h2><span class="mark"></span>博查利器</h2>
       <div class="link-row">
         <button class="entry-link" data-frame="种子码查询|https://www.chunkbase.com/">种子码查询</button>
         <button class="entry-link" data-frame="Minecraft 维基百科|https://zh.minecraft.wiki/">Minecraft 维基百科</button>
@@ -572,7 +559,7 @@ input[type=range]:focus { outline: none; }
     </section>
 
     <section class="scroll-item fade-item">
-      <h2><span class="mark"></span>其他</h2>
+      <h2><span class="mark"></span>杂类</h2>
       <div class="link-row">
         <button class="entry-link" id="btnColor">颜色代码表</button>
         <button class="entry-link" id="btnRare">我的世界稀有版本</button>
@@ -582,20 +569,23 @@ input[type=range]:focus { outline: none; }
     </section>
 
     <section class="scroll-item fade-item">
-      <h2><span class="mark"></span>其他工具</h2>
+      <h2><span class="mark"></span>奇巧百宝</h2>
       <div class="link-row">
-        <a class="entry-link" href="xncs.html">性能测试</a>
+        <button class="entry-link" data-frame="测速推演|xncs.html">测速推演</button>
         <button class="entry-link" id="btnWeb">游历 · 内嵌浏览器</button>
         <button class="entry-link" id="btnCalc">算盘 · 计算器</button>
         <button class="entry-link" id="btnColorGen">色号推演 · 颜色生成</button>
         <button class="entry-link" id="btnBase64">符箓转换 · Base64</button>
+        <button class="entry-link" id="btnJson">JSON 规整</button>
+        <button class="entry-link" id="btnUrl">URL 符码</button>
+        <button class="entry-link" id="btnM3u8">M3U8 影音匣</button>
+        <button class="entry-link" id="btnPi">寻迹圆周率</button>
       </div>
       <p style="margin-top:12px;font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);letter-spacing:.08em;">其余奇巧，静候佳音</p>
     </section>
 
-    <!-- Pages.dev 板块 -->
     <section class="scroll-item fade-item">
-      <h2><span class="mark"></span>Pages.dev 雅集</h2>
+      <h2><span class="mark"></span>Pages 同好坊</h2>
       <div class="link-row">
         <button class="entry-link" data-frame="许愿柳|https://waxyl.pages.dev/">许愿柳</button>
         <button class="entry-link" data-frame="奶娃快跑|https://nailong-kuaipao.pages.dev/">奶娃快跑</button>
@@ -612,6 +602,40 @@ input[type=range]:focus { outline: none; }
 
 <!-- ========== 静态弹窗 ========== -->
 
+<!-- 个人主页 -->
+<div class="win" id="profileWin" style="width:min(360px,92vw);">
+  <div class="win-header">
+    <span class="win-title">个人主页</span>
+    <div class="win-actions"><button class="win-close">×</button></div>
+  </div>
+  <div class="win-body">
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:20px;letter-spacing:.1em;color:var(--vermilion);font-weight:500;" id="profName">名号</div>
+    </div>
+    <div class="field" style="margin-bottom:14px;">
+      <label style="display:block;font-size:12px;color:var(--ink-muted);margin-bottom:6px;">男女</label>
+      <select id="profGender" style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:var(--font-sans);outline:none;">
+        <option value="保密">保密</option>
+        <option value="男">男</option>
+        <option value="女">女</option>
+      </select>
+    </div>
+    <div class="field" style="margin-bottom:14px;">
+      <label style="display:block;font-size:12px;color:var(--ink-muted);margin-bottom:6px;">生辰</label>
+      <input type="date" id="profBirthday" style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:var(--font-sans);outline:none;">
+    </div>
+    <div class="field" style="margin-bottom:20px;">
+      <label style="display:block;font-size:12px;color:var(--ink-muted);margin-bottom:6px;">寄语</label>
+      <textarea id="profBio" rows="3" style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:var(--font-sans);font-size:13px;outline:none;resize:vertical;"></textarea>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="top-btn" id="profSaveBtn" style="flex:1;justify-content:center;">保存</button>
+      <button class="top-btn" id="profLogoutBtn" style="flex:1;justify-content:center;color:var(--vermilion);border-color:var(--vermilion);">退出</button>
+    </div>
+  </div>
+</div>
+
+<!-- 音乐播放器窗口 -->
 <div class="win" id="musicWin" style="width:min(360px,92vw);">
   <div class="win-header">
     <span class="win-title">古风音乐盒</span>
@@ -629,6 +653,7 @@ input[type=range]:focus { outline: none; }
   </div>
 </div>
 
+<!-- 主题窗口 -->
 <div class="win" id="themeWin" style="width:min(360px,92vw);">
   <div class="win-header">
     <span class="win-title">主题与壁纸</span>
@@ -666,6 +691,7 @@ input[type=range]:focus { outline: none; }
   </div>
 </div>
 
+<!-- 语言窗口 -->
 <div class="win" id="langWin" style="width:min(280px,88vw);">
   <div class="win-header">
     <span class="win-title">择言语</span>
@@ -679,6 +705,7 @@ input[type=range]:focus { outline: none; }
   </div>
 </div>
 
+<!-- 作者抖音 -->
 <div class="win" id="douyinWin" style="width:min(300px,88vw);">
   <div class="win-header">
     <span class="win-title">作者抖音</span>
@@ -690,6 +717,7 @@ input[type=range]:focus { outline: none; }
   </div>
 </div>
 
+<!-- PCL 下载 -->
 <div class="win" id="pclWin" style="width:min(400px,90vw);">
   <div class="win-header">
     <span class="win-title">PCL 2.13 下载</span>
@@ -705,6 +733,7 @@ input[type=range]:focus { outline: none; }
   </div>
 </div>
 
+<!-- Java 服务器 -->
 <div class="win" id="javaWin" style="width:min(340px,90vw);">
   <div class="win-header">
     <span class="win-title">Java 版服务器信息</span>
@@ -717,6 +746,7 @@ input[type=range]:focus { outline: none; }
   </div>
 </div>
 
+<!-- 服务器状态查询 -->
 <div class="win iframe-win" id="statusWin" style="width:min(860px,92vw);height:min(620px,82vh);">
   <div class="win-header">
     <span class="win-title">服务器状态查询</span>
@@ -729,11 +759,12 @@ input[type=range]:focus { outline: none; }
     <iframe src="https://mcsrvstat.us/" allowfullscreen></iframe>
   </div>
   <div class="frame-hint">
-    若此处白茫无物，乃是该站闭门谢客 —
+    若此处空无一物，乃该站闭门拒客 —
     <a href="https://mcsrvstat.us/" target="_blank" rel="noopener">破窗而出 ↗</a>
   </div>
 </div>
 
+<!-- 颜色代码表 -->
 <div class="win" id="colorWin" style="width:min(460px,92vw);">
   <div class="win-header">
     <span class="win-title">MC 颜色代码表</span>
@@ -746,6 +777,7 @@ input[type=range]:focus { outline: none; }
   </div>
 </div>
 
+<!-- 稀有版本 -->
 <div class="win" id="rareWin" style="width:min(360px,90vw);">
   <div class="win-header">
     <span class="win-title">我的世界稀有版本</span>
@@ -757,6 +789,7 @@ input[type=range]:focus { outline: none; }
   </div>
 </div>
 
+<!-- 关于 -->
 <div class="win" id="aboutWin" style="width:min(380px,90vw);">
   <div class="win-header">
     <span class="win-title">关于本站</span>
@@ -778,6 +811,7 @@ input[type=range]:focus { outline: none; }
   </div>
 </div>
 
+<!-- 更新日志 -->
 <div class="win" id="logWin" style="width:min(380px,90vw);">
   <div class="win-header">
     <span class="win-title">更新日志</span>
@@ -799,6 +833,7 @@ input[type=range]:focus { outline: none; }
   </div>
 </div>
 
+<!-- MCJS 内嵌窗口 -->
 <div class="win iframe-win" id="mcWin" style="width:min(860px,92vw);height:min(620px,82vh);">
   <div class="win-header">
     <span class="win-title">我的世界MCJS · 内嵌窗</span>
@@ -811,11 +846,12 @@ input[type=range]:focus { outline: none; }
     <iframe src="https://mcjs.link/" allowfullscreen></iframe>
   </div>
   <div class="frame-hint">
-    若此处白茫无物，乃是该站闭门谢客 —
+    若此处空无一物，乃该站闭门拒客 —
     <a href="https://mcjs.link/" target="_blank" rel="noopener">破窗而出 ↗</a>
   </div>
 </div>
 
+<!-- 内嵌浏览器 -->
 <div class="win iframe-win" id="webWin" style="width:min(860px,92vw);height:min(620px,82vh);">
   <div class="win-header">
     <span class="win-title">游历 · 内嵌浏览器</span>
@@ -832,11 +868,12 @@ input[type=range]:focus { outline: none; }
     <iframe id="webIframe" src="about:blank" allowfullscreen></iframe>
   </div>
   <div class="frame-hint">
-    若此处白茫无物，乃是该站闭门谢客 —
+    若此处空无一物，乃该站闭门拒客 —
     <a id="webNewWin" href="#" target="_blank">破窗而出 ↗</a>
   </div>
 </div>
 
+<!-- 计算器 -->
 <div class="win" id="calcWin" style="width:min(300px,90vw);">
   <div class="win-header">
     <span class="win-title">算盘 · 计算器</span>
@@ -868,6 +905,7 @@ input[type=range]:focus { outline: none; }
   </div>
 </div>
 
+<!-- 色号推演 -->
 <div class="win" id="colorGenWin" style="width:min(360px,92vw);">
   <div class="win-header">
     <span class="win-title">色号推演 · 颜色生成</span>
@@ -893,6 +931,7 @@ input[type=range]:focus { outline: none; }
   </div>
 </div>
 
+<!-- 符箓转换 -->
 <div class="win" id="base64Win" style="width:min(420px,92vw);">
   <div class="win-header">
     <span class="win-title">符箓转换 · Base64</span>
@@ -910,6 +949,81 @@ input[type=range]:focus { outline: none; }
     <div>
       <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;">符箓</div>
       <textarea id="b64Output" rows="3" readonly style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:var(--font-sans);font-size:13px;outline:none;resize:vertical;"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- JSON 规整 -->
+<div class="win" id="jsonWin" style="width:min(600px,92vw);">
+  <div class="win-header">
+    <span class="win-title">JSON 规整</span>
+    <div class="win-actions"><button class="win-close">×</button></div>
+  </div>
+  <div class="win-body">
+    <div style="margin-bottom:10px;">
+      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;">输入 JSON</div>
+      <textarea id="jsonInput" rows="5" style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:monospace;font-size:13px;outline:none;resize:vertical;"></textarea>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button class="top-btn" id="jsonFormatBtn" style="flex:1;">格式化</button>
+      <button class="top-btn" id="jsonMinifyBtn" style="flex:1;">压缩</button>
+    </div>
+    <div>
+      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;">输出</div>
+      <textarea id="jsonOutput" rows="5" readonly style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:monospace;font-size:13px;outline:none;resize:vertical;"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- URL 符码 -->
+<div class="win" id="urlWin" style="width:min(600px,92vw);">
+  <div class="win-header">
+    <span class="win-title">URL 符码</span>
+    <div class="win-actions"><button class="win-close">×</button></div>
+  </div>
+  <div class="win-body">
+    <div style="margin-bottom:10px;">
+      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;">输入文本</div>
+      <textarea id="urlInput" rows="3" style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:var(--font-sans);font-size:13px;outline:none;resize:vertical;"></textarea>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button class="top-btn" id="urlEncodeBtn" style="flex:1;">编码</button>
+      <button class="top-btn" id="urlDecodeBtn" style="flex:1;">解码</button>
+    </div>
+    <div>
+      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;">输出</div>
+      <textarea id="urlOutput" rows="3" readonly style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:var(--font-sans);font-size:13px;outline:none;resize:vertical;"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- M3U8 影音匣 -->
+<div class="win" id="m3u8Win" style="width:min(860px,92vw);height:min(620px,82vh);">
+  <div class="win-header">
+    <span class="win-title">M3U8 影音匣</span>
+    <div class="win-actions"><button class="win-close">×</button></div>
+  </div>
+  <div style="padding:8px;border-bottom:1px solid var(--line);background:var(--paper-deep);display:flex;gap:8px;">
+    <input type="text" id="m3u8Input" placeholder="支持 .m3u8 或 .mp4 链接" style="flex:1;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 10px;font-family:var(--font-sans);outline:none;">
+    <button id="m3u8PlayBtn" class="top-btn" style="padding:4px 16px;">播放</button>
+  </div>
+  <div class="win-body" style="display:flex;justify-content:center;align-items:center;background:#000;">
+    <video id="m3u8Video" controls style="width:100%;height:100%;max-height:100%;outline:none;"></video>
+  </div>
+</div>
+
+<!-- 寻迹圆周率 -->
+<div class="win" id="piWin" style="width:min(360px,92vw);">
+  <div class="win-header">
+    <span class="win-title">寻迹圆周率</span>
+    <div class="win-actions"><button class="win-close">×</button></div>
+  </div>
+  <div class="win-body">
+    <p style="font-size:13px;line-height:2.1;color:var(--ink-muted);font-family:var(--font-sans);text-indent:2em;margin-bottom:16px;">
+      此术需借 Python 之力，当先备 Python 之境。于圆周率无尽之数中，寻汝生辰之位。
+    </p>
+    <div style="text-align:center;">
+      <a href="./pifindbirthday.py" download class="entry-link accent" style="padding:10px 24px;">下载 pifindbirthday.py</a>
     </div>
   </div>
 </div>
@@ -1406,7 +1520,7 @@ input[type=range]:focus { outline: none; }
     a.target = '_blank';
     a.rel = 'noopener';
     a.textContent = '破窗而出 ↗';
-    hint.appendChild(document.createTextNode('若此处白茫无物，乃是该站闭门谢客 — '));
+    hint.appendChild(document.createTextNode('若此处空无一物，乃该站闭门拒客 — '));
     hint.appendChild(a);
 
     win.appendChild(header);
@@ -1437,6 +1551,10 @@ input[type=range]:focus { outline: none; }
   document.getElementById('btnCalc').addEventListener('click', () => openWinElement(document.getElementById('calcWin')));
   document.getElementById('btnColorGen').addEventListener('click', () => openWinElement(document.getElementById('colorGenWin')));
   document.getElementById('btnBase64').addEventListener('click', () => openWinElement(document.getElementById('base64Win')));
+  document.getElementById('btnJson').addEventListener('click', () => openWinElement(document.getElementById('jsonWin')));
+  document.getElementById('btnUrl').addEventListener('click', () => openWinElement(document.getElementById('urlWin')));
+  document.getElementById('btnM3u8').addEventListener('click', () => openWinElement(document.getElementById('m3u8Win')));
+  document.getElementById('btnPi').addEventListener('click', () => openWinElement(document.getElementById('piWin')));
 
   document.querySelectorAll('[data-frame]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1514,7 +1632,7 @@ input[type=range]:focus { outline: none; }
   });
 
   /* ============================================================
-     10. 色号推演 · 颜色生成
+     10. 色号推演
      ============================================================ */
   const colorPicker = document.getElementById('colorPicker');
   const colorHexInput = document.getElementById('colorHexInput');
@@ -1566,7 +1684,7 @@ input[type=range]:focus { outline: none; }
   updateColorInfo('#b83a2e');
 
   /* ============================================================
-     11. 符箓转换 · Base64
+     11. 符箓转换
      ============================================================ */
   const b64Input = document.getElementById('b64Input');
   const b64Output = document.getElementById('b64Output');
@@ -1590,31 +1708,165 @@ input[type=range]:focus { outline: none; }
   });
 
   /* ============================================================
-     12. 登录状态
+     12. JSON 规整
+     ============================================================ */
+  const jsonInput = document.getElementById('jsonInput');
+  const jsonOutput = document.getElementById('jsonOutput');
+  
+  document.getElementById('jsonFormatBtn').addEventListener('click', () => {
+    try {
+      const parsed = JSON.parse(jsonInput.value);
+      jsonOutput.value = JSON.stringify(parsed, null, 2);
+    } catch (e) {
+      jsonOutput.value = '格式化失败：' + e.message;
+    }
+  });
+
+  document.getElementById('jsonMinifyBtn').addEventListener('click', () => {
+    try {
+      const parsed = JSON.parse(jsonInput.value);
+      jsonOutput.value = JSON.stringify(parsed);
+    } catch (e) {
+      jsonOutput.value = '压缩失败：' + e.message;
+    }
+  });
+
+  /* ============================================================
+     13. URL 符码
+     ============================================================ */
+  const urlInput = document.getElementById('urlInput');
+  const urlOutput = document.getElementById('urlOutput');
+
+  document.getElementById('urlEncodeBtn').addEventListener('click', () => {
+    urlOutput.value = encodeURIComponent(urlInput.value);
+  });
+
+  document.getElementById('urlDecodeBtn').addEventListener('click', () => {
+    try {
+      urlOutput.value = decodeURIComponent(urlInput.value);
+    } catch (e) {
+      urlOutput.value = '解码失败：' + e.message;
+    }
+  });
+
+  /* ============================================================
+     14. M3U8 影音匣
+     ============================================================ */
+  const m3u8Input = document.getElementById('m3u8Input');
+  const m3u8PlayBtn = document.getElementById('m3u8PlayBtn');
+  const m3u8Video = document.getElementById('m3u8Video');
+  let hlsInstance = null;
+
+  // 动态加载 hls.js 以便播放 m3u8
+  const script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest';
+  document.head.appendChild(script);
+
+  m3u8PlayBtn.addEventListener('click', () => {
+    let url = m3u8Input.value.trim();
+    if (!url) return;
+
+    if (hlsInstance) {
+      hlsInstance.destroy();
+      hlsInstance = null;
+    }
+
+    if (url.includes('.m3u8')) {
+      if (window.Hls && window.Hls.isSupported()) {
+        hlsInstance = new window.Hls();
+        hlsInstance.loadSource(url);
+        hlsInstance.attachMedia(m3u8Video);
+        hlsInstance.on(window.Hls.Events.MANIFEST_PARSED, () => {
+          m3u8Video.play().catch(() => {});
+        });
+      } else if (m3u8Video.canPlayType('application/vnd.apple.mpegurl')) {
+        // Safari 原生支持
+        m3u8Video.src = url;
+        m3u8Video.play().catch(() => {});
+      } else {
+        alert('当前浏览器不支持 M3U8 播放');
+      }
+    } else {
+      // 直接当普通视频播放
+      m3u8Video.src = url;
+      m3u8Video.play().catch(() => {});
+    }
+  });
+
+  /* ============================================================
+     15. 个人主页逻辑
+     ============================================================ */
+  const profileWin = document.getElementById('profileWin');
+  const profName = document.getElementById('profName');
+  const profGender = document.getElementById('profGender');
+  const profBirthday = document.getElementById('profBirthday');
+  const profBio = document.getElementById('profBio');
+  const profSaveBtn = document.getElementById('profSaveBtn');
+  const profLogoutBtn = document.getElementById('profLogoutBtn');
+
+  let currentUser = null;
+  try { currentUser = JSON.parse(localStorage.getItem('moju_current_user') || 'null'); } catch (e) {}
+
+  function loadProfile() {
+    if (!currentUser || !currentUser.name) return;
+    profName.textContent = currentUser.name;
+    
+    const profileKey = 'moju_user_profile_' + currentUser.name;
+    let profileData = null;
+    try { profileData = JSON.parse(localStorage.getItem(profileKey) || 'null'); } catch (e) {}
+
+    if (profileData) {
+      profGender.value = profileData.gender || '保密';
+      profBirthday.value = profileData.birthday || '';
+      profBio.value = profileData.bio || '';
+    } else {
+      profGender.value = '保密';
+      profBirthday.value = '';
+      profBio.value = '';
+    }
+  }
+
+  profSaveBtn.addEventListener('click', () => {
+    if (!currentUser || !currentUser.name) return;
+    const profileKey = 'moju_user_profile_' + currentUser.name;
+    const data = {
+      gender: profGender.value,
+      birthday: profBirthday.value,
+      bio: profBio.value
+    };
+    localStorage.setItem(profileKey, JSON.stringify(data));
+    alert('资料已存入囊中');
+  });
+
+  profLogoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('moju_current_user');
+    window.location.reload();
+  });
+
+  document.getElementById('loginTip').addEventListener('click', (e) => {
+    if (currentUser && currentUser.name) {
+      e.preventDefault();
+      loadProfile();
+      openWinElement(profileWin);
+    }
+  });
+
+  /* ============================================================
+     16. 登录状态渲染
      ============================================================ */
   function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
   }
   function renderLoginTip() {
     const tip = document.getElementById('loginTip');
-    let user = null;
-    try { user = JSON.parse(localStorage.getItem('moju_current_user') || 'null'); } catch (e) {}
-    if (user && user.name) {
-      tip.innerHTML = `入卷者 · <strong style="font-weight:500;">${escapeHtml(user.name)}</strong>`;
+    if (currentUser && currentUser.name) {
+      tip.innerHTML = `入卷者 · <strong style="font-weight:500;">${escapeHtml(currentUser.name)}</strong>`;
       tip.href = 'javascript:void(0)';
-      tip.title = '点击退出';
-      tip.onclick = (e) => {
-        e.preventDefault();
-        if (confirm('要散卷退出吗？')) {
-          localStorage.removeItem('moju_current_user');
-          renderLoginTip();
-        }
-      };
+      tip.title = '点击查看个人主页';
     } else {
       tip.innerHTML = '入卷';
       tip.href = 'login.html';
       tip.title = '';
-      tip.onclick = null;
     }
   }
   renderLoginTip();

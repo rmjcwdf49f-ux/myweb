@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<!-- 强力 IE 重定向检测 -->
+<!-- IE 强制重定向检测 -->
 <script>
   if (/*@cc_on!@*/false || !!document.documentMode) {
     window.location.href = 'ie.html';
@@ -26,6 +26,19 @@
   --shadow: 0 16px 48px rgba(60,48,32,0.13);
   --font-serif: 'Noto Serif SC', 'Songti SC', 'SimSun', Georgia, serif;
   --font-sans: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+html[data-theme="dark"] {
+  --paper: #1a1712;
+  --paper-deep: #221e17;
+  --ink: #e6dcc8;
+  --ink-muted: #a89a82;
+  --ink-subtle: #6b604f;
+  --line: #3d362b;
+  --vermilion: #d45a4a;
+  --gold: #c49a5a;
+  --surface: rgba(26,23,18,0.94);
+  --surface-solid: #1a1712;
+  --shadow: 0 16px 56px rgba(0,0,0,0.60);
 }
 html[data-theme="qingyun"] {
   --paper: #eef3ec;
@@ -53,18 +66,19 @@ html[data-theme="qinghua"] {
   --surface-solid: #f0f4f8;
   --shadow: 0 16px 48px rgba(30,40,60,0.13);
 }
-html[data-theme="dark"] {
-  --paper: #1a1712;
-  --paper-deep: #221e17;
-  --ink: #e6dcc8;
-  --ink-muted: #a89a82;
-  --ink-subtle: #6b604f;
-  --line: #3d362b;
-  --vermilion: #d45a4a;
-  --gold: #c49a5a;
-  --surface: rgba(26,23,18,0.94);
-  --surface-solid: #1a1712;
-  --shadow: 0 16px 56px rgba(0,0,0,0.60);
+/* 补充樱花粉配色 */
+html[data-theme="sakura"] {
+  --paper: #fdf2f5;
+  --paper-deep: #fae1e9;
+  --ink: #4a2e35;
+  --ink-muted: #8a6b73;
+  --ink-subtle: #ba9ba3;
+  --line: #f0c4d0;
+  --vermilion: #d74b6f;
+  --gold: #e5a2b1;
+  --surface: rgba(253,242,245,0.92);
+  --surface-solid: #fdf2f5;
+  --shadow: 0 16px 48px rgba(80,40,60,0.13);
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }

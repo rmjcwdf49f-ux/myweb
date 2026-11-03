@@ -79,6 +79,32 @@ html[data-theme="sakura"] {
   --surface-solid: #fdf2f5;
   --shadow: 0 16px 48px rgba(80,40,60,0.13);
 }
+html[data-theme="purple"] {
+  --paper: #f2edf5;
+  --paper-deep: #e6dced;
+  --ink: #3a2b45;
+  --ink-muted: #6b5a77;
+  --ink-subtle: #9b8da6;
+  --line: #d1c2dc;
+  --vermilion: #7a3e9d;
+  --gold: #a87b9e;
+  --surface: rgba(242,237,245,0.92);
+  --surface-solid: #f2edf5;
+  --shadow: 0 16px 48px rgba(50,30,60,0.13);
+}
+html[data-theme="yellow"] {
+  --paper: #fdfae3;
+  --paper-deep: #f5f0d1;
+  --ink: #4a3f1c;
+  --ink-muted: #7a6b3d;
+  --ink-subtle: #a69a70;
+  --line: #e8dfab;
+  --vermilion: #c99212;
+  --gold: #b89f5a;
+  --surface: rgba(253,250,227,0.92);
+  --surface-solid: #fdfae3;
+  --shadow: 0 16px 48px rgba(80,70,30,0.13);
+}
 
 * { margin:0; padding:0; box-sizing:border-box; }
 
@@ -423,6 +449,7 @@ input[type=range]:focus { outline: none; }
   flex:1; border:1px solid var(--line); background:transparent;
   color:var(--ink); padding:9px; font-family:var(--font-serif);
   font-size:12px; letter-spacing:.1em; cursor:pointer; transition:all .2s;
+  min-width: 60px;
 }
 .mode-btn.active { border-color:var(--vermilion); color:var(--vermilion); }
 .upload-label {
@@ -708,7 +735,7 @@ input[type=range]:focus { outline: none; }
 </div>
 
 <!-- 主题窗口 -->
-<div class="win" id="themeWin" style="width:min(360px,92vw);">
+<div class="win" id="themeWin" style="width:min(380px,92vw);">
   <div class="win-header">
     <span class="win-title">主题与壁纸</span>
     <div class="win-actions"><button class="win-close">×</button></div>
@@ -721,6 +748,8 @@ input[type=range]:focus { outline: none; }
         <button class="mode-btn" data-mode="qingyun">青云绿</button>
         <button class="mode-btn" data-mode="qinghua">青花瓷</button>
         <button class="mode-btn" data-mode="sakura">樱花粉</button>
+        <button class="mode-btn" data-mode="purple">绛紫</button>
+        <button class="mode-btn" data-mode="yellow">秋黄</button>
         <button class="mode-btn" data-mode="dark">松烟墨</button>
       </div>
     </div>

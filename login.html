@@ -167,6 +167,7 @@ html[data-theme="dark"] #wallpaperVideo { opacity: .06; }
   border:1px solid var(--line);
   padding:7px 14px;
   transition:all .25s;
+  border-radius: 2px;
 }
 .back-link:hover { border-color:var(--vermilion); color:var(--vermilion); }
 
@@ -189,6 +190,7 @@ html[data-theme="dark"] #wallpaperVideo { opacity: .06; }
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
+  border-radius: 4px;
 }
 .win::before {
   content:''; position:absolute; inset:5px;
@@ -262,7 +264,7 @@ html[data-theme="dark"] #wallpaperVideo { opacity: .06; }
   width:100%; border:1px solid var(--ink); background:transparent;
   color:var(--ink); padding:13px; font-family:var(--font-serif);
   font-size:15px; letter-spacing:.24em; cursor:pointer;
-  margin-top:8px; transition:all .28s;
+  margin-top:8px; transition:all .28s; border-radius: 2px;
 }
 .auth-btn:hover { background:var(--ink); color:var(--paper); }
 
@@ -290,6 +292,7 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
   border:1px dashed var(--line);
   font-size:11px; line-height:1.9; color:var(--ink-subtle);
   font-family:var(--font-sans); letter-spacing:.03em;
+  border-radius: 2px;
 }
 .hint-box strong { color:var(--ink-muted); font-weight:500; }
 
@@ -307,15 +310,15 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
 
 <div class="page">
   <header class="topbar">
-    <div class="brand">墨居<em>·</em>入卷</div>
-    <a class="back-link" href="index.html">← 归去</a>
+    <div class="brand" id="brandTitle">墨居<em>·</em>入卷</div>
+    <a class="back-link" href="index.html" id="backLink">← 归去</a>
   </header>
 
   <main class="main" id="mainArea">
     <!-- 登录窗口 -->
     <div class="win" id="loginWin" style="width: min(400px, 92vw);">
       <div class="win-header">
-        <span class="win-title">入卷 · 题名</span>
+        <span class="win-title" id="winTitle">入卷 · 题名</span>
         <div class="win-actions">
           <button class="win-btn" id="centerBtn" title="居中归位">—</button>
         </div>
@@ -326,11 +329,11 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
 
         <form id="authForm" autocomplete="off">
           <div class="field">
-            <label for="username">名号</label>
+            <label for="username" id="labelUser">名号</label>
             <input type="text" id="username" placeholder="如：松风客" maxlength="20" required>
           </div>
           <div class="field">
-            <label for="password">密语</label>
+            <label for="password" id="labelPwd">密语</label>
             <input type="password" id="password" placeholder="至少 4 位" minlength="4" required>
           </div>
           <button type="submit" class="auth-btn" id="submitBtn">题 名 入 卷</button>
@@ -343,7 +346,7 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
           <a id="switchMode">另立新名</a>
         </div>
 
-        <div class="hint-box">
+        <div class="hint-box" id="hintBox">
           <strong>说明</strong><br>
           纯前端 · 名号与密语摘要仅存本地浏览器。密语以 SHA-256 摘要保存，原文不落盘。清空浏览器数据即散卷。
         </div>
@@ -362,7 +365,27 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
   const html = document.documentElement;
 
   /* ============================================================
-     1. 同步主页的主题与背景设置
+     1. 多语言支持同步
+     ============================================================ */
+  const currentLang = localStorage.getItem('moju_lang') || 'wenyan';
+  
+  if (currentLang === 'zhCN') {
+    document.getElementById('brandTitle').innerHTML = '墨居<em>·</em>登录';
+    document.getElementById('backLink').textContent = '← 返回主页';
+    document.getElementById('winTitle').textContent = '入卷 · 登录';
+    document.getElementById('authSub').textContent = '已有账号 · 请登录';
+    document.getElementById('labelUser').textContent = '用户名';
+    document.getElementById('labelPwd').textContent = '密码';
+    document.getElementById('submitBtn').textContent = '登 录';
+    document.getElementById('switchText').textContent = '没有账号？';
+    document.getElementById('switchMode').textContent = '注册';
+    document.getElementById('hintBox').innerHTML = '<strong>说明</strong><br>纯前端 · 账号与密码摘要仅存本地浏览器。密码以 SHA-256 摘要保存，原文不落盘。清空浏览器数据即失效。';
+    document.getElementById('username').placeholder = '请输入用户名';
+    document.getElementById('password').placeholder = '请输入密码（至少 4 位）';
+  }
+
+  /* ============================================================
+     2. 同步主页的主题与背景设置
      ============================================================ */
   const LS_MODE = 'moju_theme_mode';
   const LS_WALL_TYPE = 'moju_wall_type';
@@ -409,7 +432,7 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
   restoreBackground();
 
   /* ============================================================
-     2. 登录窗口拖动与缩放逻辑
+     3. 登录窗口拖动与缩放逻辑
      ============================================================ */
   const win = document.getElementById('loginWin');
   const header = win.querySelector('.win-header');
@@ -418,7 +441,6 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
   let dragState = null;
   let resizeState = null;
 
-  // 居中函数
   function centerWin() {
     const rect = win.getBoundingClientRect();
     const left = Math.max(10, (window.innerWidth - rect.width) / 2);
@@ -429,11 +451,9 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
     win.style.bottom = 'auto';
   }
 
-  // 初始居中
   requestAnimationFrame(centerWin);
   centerBtn.addEventListener('click', centerWin);
 
-  // 鼠标拖拽
   header.addEventListener('mousedown', (e) => {
     if (e.button !== 0) return;
     if (e.target.closest('.win-btn')) return;
@@ -447,7 +467,6 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
     e.preventDefault();
   });
 
-  // 触屏拖拽
   header.addEventListener('touchstart', (e) => {
     if (e.target.closest('.win-btn')) return;
     const touch = e.touches[0];
@@ -459,7 +478,6 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
     dragState = { sx: touch.clientX, sy: touch.clientY, ol: rect.left, ot: rect.top };
   }, { passive: true });
 
-  // 四角缩放
   win.querySelectorAll('.resize-handle').forEach(handle => {
     handle.addEventListener('mousedown', (e) => {
       if (e.button !== 0) return;
@@ -511,7 +529,6 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
       const right = handle.classList.contains('rh-tr') || handle.classList.contains('rh-br');
       const bottom = handle.classList.contains('rh-bl') || handle.classList.contains('rh-br');
       
-      // 限制最小宽高，防止内容挤压变形
       const minW = 280;
       const minH = 300;
       const nw = Math.max(minW, sw + (right ? dx : -dx));
@@ -544,7 +561,7 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
 
 
   /* ============================================================
-     3. 登录 / 注册逻辑
+     4. 登录 / 注册逻辑
      ============================================================ */
   async function sha256(text) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
@@ -574,17 +591,17 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
   function setMode(register) {
     isRegisterMode = register;
     if (register) {
-      authTitle.textContent = '立 名';
-      authSub.textContent = '新名入卷 · 请题密语';
-      submitBtn.textContent = '立 名 入 卷';
-      switchText.textContent = '已有名帖？';
-      switchModeEl.textContent = '题旧名';
+      authTitle.textContent = currentLang === 'zhCN' ? '注 册' : '立 名';
+      authSub.textContent = currentLang === 'zhCN' ? '创建新账号' : '新名入卷 · 请题密语';
+      submitBtn.textContent = currentLang === 'zhCN' ? '注 册' : '立 名 入 卷';
+      switchText.textContent = currentLang === 'zhCN' ? '已有账号？' : '已有名帖？';
+      switchModeEl.textContent = currentLang === 'zhCN' ? '去登录' : '题旧名';
     } else {
-      authTitle.textContent = '入 卷';
-      authSub.textContent = '已有名帖 · 请题旧名';
-      submitBtn.textContent = '题 名 入 卷';
-      switchText.textContent = '初来此地？';
-      switchModeEl.textContent = '另立新名';
+      authTitle.textContent = currentLang === 'zhCN' ? '登 录' : '入 卷';
+      authSub.textContent = currentLang === 'zhCN' ? '已有账号 · 请登录' : '已有名帖 · 请题旧名';
+      submitBtn.textContent = currentLang === 'zhCN' ? '登 录' : '题 名 入 卷';
+      switchText.textContent = currentLang === 'zhCN' ? '没有账号？' : '初来此地？';
+      switchModeEl.textContent = currentLang === 'zhCN' ? '去注册' : '另立新名';
     }
     setMsg('', '');
   }
@@ -599,8 +616,8 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
     e.preventDefault();
     const name = usernameInput.value.trim();
     const pwd = passwordInput.value;
-    if (!name || name.length < 2) { setMsg('名号至少两字。', 'err'); return; }
-    if (!pwd || pwd.length < 4) { setMsg('密语至少四位。', 'err'); return; }
+    if (!name || name.length < 2) { setMsg(currentLang === 'zhCN' ? '用户名至少2个字符' : '名号至少两字。', 'err'); return; }
+    if (!pwd || pwd.length < 4) { setMsg(currentLang === 'zhCN' ? '密码至少4位' : '密语至少四位。', 'err'); return; }
 
     submitBtn.disabled = true;
     const originalText = submitBtn.textContent;
@@ -611,21 +628,21 @@ html[data-theme="dark"] .msg.ok { color:#7fbf8f; }
       const hash = await sha256(name + '::' + pwd);
 
       if (isRegisterMode) {
-        if (users[name]) { setMsg('此名已被题过，请另择一名或切换至「题旧名」。', 'err'); return; }
+        if (users[name]) { setMsg(currentLang === 'zhCN' ? '该用户名已被注册，请换一个。' : '此名已被题过，请另择一名或切换至「题旧名」。', 'err'); return; }
         users[name] = { name, hash, createdAt: Date.now() };
         saveUsers(users);
         localStorage.setItem(LS_CURRENT, JSON.stringify({ name, loginAt: Date.now() }));
-        setMsg('立名已成，入卷中…', 'ok');
+        setMsg(currentLang === 'zhCN' ? '注册成功，正在登录…' : '立名已成，入卷中…', 'ok');
         setTimeout(() => { window.location.href = 'index.html'; }, 500);
       } else {
-        if (!users[name]) { setMsg('卷中无此名，请先「另立新名」。', 'err'); return; }
-        if (users[name].hash !== hash) { setMsg('密语不契，请重题。', 'err'); return; }
+        if (!users[name]) { setMsg(currentLang === 'zhCN' ? '用户不存在，请先注册。' : '卷中无此名，请先「另立新名」。', 'err'); return; }
+        if (users[name].hash !== hash) { setMsg(currentLang === 'zhCN' ? '密码错误。' : '密语不契，请重题。', 'err'); return; }
         localStorage.setItem(LS_CURRENT, JSON.stringify({ name, loginAt: Date.now() }));
-        setMsg('名帖相合，入卷中…', 'ok');
+        setMsg(currentLang === 'zhCN' ? '登录成功…' : '名帖相合，入卷中…', 'ok');
         setTimeout(() => { window.location.href = 'index.html'; }, 500);
       }
     } catch (err) {
-      setMsg('题名时出了岔子，请再试一次。', 'err');
+      setMsg(currentLang === 'zhCN' ? '发生错误，请重试。' : '题名时出了岔子，请再试一次。', 'err');
       console.error(err);
     } finally {
       submitBtn.disabled = false;

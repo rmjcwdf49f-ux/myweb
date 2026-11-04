@@ -159,12 +159,6 @@ html[data-theme="dark"] #wallpaperVideo { opacity: .06; }
   background: var(--surface);
   position: sticky; top:0; z-index:200;
   gap: 12px;
-  transition: box-shadow .3s ease, backdrop-filter .3s ease;
-}
-.topbar.scrolled {
-  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 .brand {
   font-size: clamp(17px,2.1vw,23px);
@@ -222,26 +216,12 @@ html[data-theme="dark"] #wallpaperVideo { opacity: .06; }
   max-width: 920px; margin:0 auto; width:100%;
 }
 
-/* 🌟 全新升级的滚动动画（附带防崩溃显示） 🌟 */
 .fade-item {
-  opacity: 1;
-  transform: none;
-  filter: none;
+  opacity:0;
+  transform: translateY(18px);
+  transition: opacity .6s ease, transform .6s ease;
 }
-html.js-loaded .fade-item {
-  opacity: 0;
-  transform: translateY(40px) scale(0.96);
-  filter: blur(6px);
-  transition: opacity 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), 
-              transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), 
-              filter 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-  will-change: opacity, transform, filter;
-}
-html.js-loaded .fade-item.visible {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  filter: blur(0);
-}
+.fade-item.visible { opacity:1; transform: translateY(0); }
 
 .hero-title { text-align:center; line-height:1.4; }
 .hero-title h1 {
@@ -265,12 +245,10 @@ html.js-loaded .fade-item.visible {
   background: var(--surface);
   padding: clamp(18px,3vw,28px) clamp(20px,3.5vw,32px);
   position: relative;
-  border-radius: 4px;
 }
 .scroll-item::before {
   content:''; position:absolute; inset:7px;
   border:1px solid var(--line); pointer-events:none; opacity:.5;
-  border-radius: 2px;
 }
 .scroll-item h2 {
   font-size: clamp(16px,1.9vw,19px);
@@ -296,7 +274,6 @@ html.js-loaded .fade-item.visible {
   transition: all .25s;
   text-decoration:none;
   display:inline-block;
-  border-radius: 2px;
 }
 .entry-link:hover { background: var(--ink); color: var(--paper); }
 .entry-link.accent { border-color: var(--vermilion); color: var(--vermilion); }
@@ -315,12 +292,10 @@ html.js-loaded .fade-item.visible {
   font-family:var(--font-sans);
   color:var(--ink-muted);
   background: var(--paper-deep);
-  border-radius: 2px;
 }
 .color-chip i {
   width:12px; height:12px; display:inline-block;
   border:1px solid rgba(0,0,0,.18); flex-shrink:0;
-  border-radius: 2px;
 }
 .color-chip b { font-weight:500; color: var(--ink); }
 
@@ -346,7 +321,6 @@ html.js-loaded .fade-item.visible {
   transition: all .25s;
   font-family: var(--font-sans);
   box-shadow: 0 4px 16px rgba(60,48,32,.10);
-  border-radius: 50%;
 }
 #backTop.show { display:flex; }
 #backTop:hover { border-color: var(--vermilion); color: var(--vermilion); }
@@ -370,7 +344,6 @@ html.js-loaded .fade-item.visible {
   visibility: hidden;
   pointer-events: none;
   transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
-  border-radius: 4px;
 }
 .win::before {
   content:''; position:absolute; inset:5px;
@@ -476,20 +449,19 @@ input[type=range]:focus { outline: none; }
   flex:1; border:1px solid var(--line); background:transparent;
   color:var(--ink); padding:9px; font-family:var(--font-serif);
   font-size:12px; letter-spacing:.1em; cursor:pointer; transition:all .2s;
-  min-width: 60px; border-radius: 2px;
+  min-width: 60px;
 }
 .mode-btn.active { border-color:var(--vermilion); color:var(--vermilion); }
 .upload-label {
   flex:1; border:1px dashed var(--line); background:transparent;
   color:var(--ink-muted); padding:10px 8px; font-family:var(--font-sans);
   font-size:12px; letter-spacing:.06em; cursor:pointer; text-align:center; min-width:110px;
-  border-radius: 2px;
 }
 .upload-label:hover { border-color:var(--vermilion); color:var(--vermilion); }
 .clear-wall {
   margin-top:10px; width:100%; border:1px solid var(--line); background:transparent;
   color:var(--ink-muted); padding:7px; font-family:var(--font-sans); font-size:11px;
-  letter-spacing:.12em; cursor:pointer; transition:all .2s; border-radius: 2px;
+  letter-spacing:.12em; cursor:pointer; transition:all .2s;
 }
 .clear-wall:hover { border-color:var(--vermilion); color:var(--vermilion); }
 
@@ -510,7 +482,6 @@ input[type=range]:focus { outline: none; }
   border: 1px solid var(--line); background: var(--surface);
   color: var(--ink); font-size: 16px; font-family: var(--font-serif);
   padding: 12px 0; cursor: pointer; transition: all 0.2s; user-select: none;
-  border-radius: 2px;
 }
 .calc-btn:hover { border-color: var(--vermilion); color: var(--vermilion); }
 .calc-btn:active { background: var(--paper-deep); }
@@ -541,6 +512,7 @@ input[type=range]:focus { outline: none; }
   letter-spacing: .06em;
 }
 
+/* 路由轮盘与设备信息样式 */
 .wheel-container {
   display: flex; justify-content: space-between; gap: 6px; margin-top: 15px;
 }
@@ -593,114 +565,114 @@ input[type=range]:focus { outline: none; }
 
 <div class="page">
 
-  <header class="topbar" id="topbar">
-    <div class="brand" data-i18n="title">MC<em>·</em>玩家工具站</div>
+  <header class="topbar">
+    <div class="brand">MC<em>·</em>玩家工具站</div>
     <div class="topbar-right">
       <button class="top-btn music-btn" id="musicBtn" title="音乐盒">
-        <span id="musicText" data-i18n="music">音乐盒</span>
+        <span id="musicText">音乐盒</span>
       </button>
-      <button class="top-btn" id="btnDouyin" data-i18n="douyin">作者抖音</button>
-      <button class="top-btn" id="btnLang" data-i18n="lang">语言</button>
-      <a class="top-btn login-btn" id="loginTip" href="login.html" data-i18n="login">入卷</a>
+      <button class="top-btn" id="btnDouyin">作者抖音</button>
+      <button class="top-btn" id="btnLang">语言</button>
+      <a class="top-btn login-btn" id="loginTip" href="login.html">入卷</a>
       <a class="top-btn github" href="https://github.com/rmjcwdf49f-ux/myweb" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .3.21.67.8.55A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
         GitHub
       </a>
-      <button class="top-btn" id="themeBtn" data-i18n="theme">主题</button>
+      <button class="top-btn" id="themeBtn">主题</button>
     </div>
   </header>
 
   <main class="main">
 
     <div class="hero-title fade-item">
-      <h1><span data-i18n="title">MC 玩家工具站</span></h1>
-      <p class="hero-sub" data-i18n="subtitle">方块千秋 · 自留雅地</p>
+      <h1><span>MC 玩家工具站</span></h1>
+      <p class="hero-sub">方块千秋 · 自留雅地</p>
     </div>
 
     <section class="scroll-item fade-item">
-      <h2><span class="mark"></span><span data-i18n="secDownload">游艺下载</span></h2>
+      <h2><span class="mark"></span>游艺下载</h2>
       <div class="link-row">
-        <button class="entry-link" data-frame="安卓版 MC 基岩版下载|https://mcarc.top/" data-i18n="dlAndroid">安卓版 MC 基岩版下载</button>
-        <button class="entry-link" data-frame="Windows MC 基岩版下载|https://www.mcappx.com/" data-i18n="dlWin">Windows MC 基岩版下载</button>
-        <button class="entry-link accent" id="btnPcl" data-i18n="dlPcl">PCL 2.13 下载</button>
+        <button class="entry-link" data-frame="安卓版 MC 基岩版下载|https://mcarc.top/">安卓版 MC 基岩版下载</button>
+        <button class="entry-link" data-frame="Windows MC 基岩版下载|https://www.mcappx.com/">Windows MC 基岩版下载</button>
+        <button class="entry-link accent" id="btnPcl">PCL 2.13 下载</button>
       </div>
     </section>
 
     <section class="scroll-item fade-item">
-      <h2><span class="mark"></span><span data-i18n="secServer">联机之所</span></h2>
+      <h2><span class="mark"></span>联机之所</h2>
       <div class="link-row">
-        <button class="entry-link disabled" data-i18n="svrStop">加入我的 MC 基岩版服务器（停服）</button>
-        <button class="entry-link accent" id="btnJava" data-i18n="svrJava">MC Java 版服务器</button>
+        <button class="entry-link disabled">加入我的 MC 基岩版服务器（停服）</button>
+        <button class="entry-link accent" id="btnJava">MC Java 版服务器</button>
       </div>
     </section>
 
     <section class="scroll-item fade-item">
-      <h2><span class="mark"></span><span data-i18n="secWeb">云游之界</span></h2>
+      <h2><span class="mark"></span>云游之界</h2>
       <div class="link-row">
-        <button class="entry-link accent" id="btnMc" data-i18n="webMcjs">我的世界MCJS · 内嵌窗</button>
+        <button class="entry-link accent" id="btnMc">我的世界MCJS · 内嵌窗</button>
       </div>
     </section>
 
     <section class="scroll-item fade-item">
-      <h2><span class="mark"></span><span data-i18n="secTools">博查利器</span></h2>
+      <h2><span class="mark"></span>博查利器</h2>
       <div class="link-row">
-        <button class="entry-link" data-frame="种子码查询|https://www.chunkbase.com/" data-i18n="tlSeed">种子码查询</button>
-        <button class="entry-link" data-frame="Minecraft 维基百科|https://zh.minecraft.wiki/" data-i18n="tlWiki">Minecraft 维基百科</button>
-        <button class="entry-link" data-frame="附魔计算器|https://www.minecrafttoolkit.com/calculators/enchantment" data-i18n="tlEnchant">附魔计算器</button>
-        <button class="entry-link" id="btnStatus" data-i18n="tlStatus">服务器状态查询</button>
-        <button class="entry-link" data-frame="游戏指令速查表|https://yzbwdlt.pages.dev/docs/docs/commands/all_commands/" data-i18n="tlCmds">游戏指令速查表</button>
-        <button class="entry-link" data-frame="Minecraft Tools|https://minecraft.tools/" data-i18n="tlMcTools">Minecraft Tools</button>
-        <button class="entry-link" data-frame="MCNav 导航|https://www.mcnav.net/" data-i18n="tlMcNav">MCNav 导航</button>
-        <button class="entry-link" data-frame="小舟工具箱|https://tool.lonzov.top/" data-i18n="tlXzTool">小舟工具箱</button>
-        <button class="entry-link" data-frame="MCStacker 指令生成|https://mcstacker.net/" data-i18n="tlStacker">MCStacker 指令生成</button>
-        <button class="entry-link" data-frame="Minecraft Heads|https://minecraft-heads.com/" data-i18n="tlHeads">Minecraft Heads</button>
-        <button class="entry-link" data-frame="Textcraft 艺术字|https://textcraft.net/" data-i18n="tlText">Textcraft 艺术字</button>
-        <button class="entry-link" data-frame="MC百科|https://www.mcmod.cn/" data-i18n="tlMcMod">MC百科</button>
+        <button class="entry-link" data-frame="种子码查询|https://www.chunkbase.com/">种子码查询</button>
+        <button class="entry-link" data-frame="Minecraft 维基百科|https://zh.minecraft.wiki/">Minecraft 维基百科</button>
+        <button class="entry-link" data-frame="附魔计算器|https://www.minecrafttoolkit.com/calculators/enchantment">附魔计算器</button>
+        <button class="entry-link" id="btnStatus">服务器状态查询</button>
+        <button class="entry-link" data-frame="游戏指令速查表|https://yzbwdlt.pages.dev/docs/docs/commands/all_commands/">游戏指令速查表</button>
+        <button class="entry-link" data-frame="Minecraft Tools|https://minecraft.tools/">Minecraft Tools</button>
+        <button class="entry-link" data-frame="MCNav 导航|https://www.mcnav.net/">MCNav 导航</button>
+        <button class="entry-link" data-frame="小舟工具箱|https://tool.lonzov.top/">小舟工具箱</button>
+        <button class="entry-link" data-frame="MCStacker 指令生成|https://mcstacker.net/">MCStacker 指令生成</button>
+        <button class="entry-link" data-frame="Minecraft Heads|https://minecraft-heads.com/">Minecraft Heads</button>
+        <button class="entry-link" data-frame="Textcraft 艺术字|https://textcraft.net/">Textcraft 艺术字</button>
+        <button class="entry-link" data-frame="MC百科|https://www.mcmod.cn/">MC百科</button>
       </div>
     </section>
 
     <section class="scroll-item fade-item">
-      <h2><span class="mark"></span><span data-i18n="secMisc">杂类</span></h2>
+      <h2><span class="mark"></span>杂类</h2>
       <div class="link-row">
-        <button class="entry-link" id="btnColor" data-i18n="msColor">颜色代码表</button>
-        <button class="entry-link" id="btnRare" data-i18n="msRare">我的世界稀有版本</button>
-        <button class="entry-link" id="btnAbout" data-i18n="msAbout">关于</button>
-        <button class="entry-link" id="btnLog" data-i18n="msLog">更新日志</button>
+        <button class="entry-link" id="btnColor">颜色代码表</button>
+        <button class="entry-link" id="btnRare">我的世界稀有版本</button>
+        <button class="entry-link" id="btnAbout">关于</button>
+        <button class="entry-link" id="btnLog">更新日志</button>
       </div>
     </section>
 
     <section class="scroll-item fade-item">
-      <h2><span class="mark"></span><span data-i18n="secWonder">奇巧百宝</span></h2>
+      <h2><span class="mark"></span>奇巧百宝</h2>
       <div class="link-row">
-        <button class="entry-link" data-frame="测速推演|xncs.html" data-i18n="wdSpeed">测速推演</button>
-        <button class="entry-link" id="btnWeb" data-i18n="wdBrowser">游历 · 内嵌浏览器</button>
-        <button class="entry-link" id="btnCalc" data-i18n="wdCalc">算盘 · 计算器</button>
-        <button class="entry-link" id="btnColorGen" data-i18n="wdColorGen">色号推演 · 颜色生成</button>
-        <button class="entry-link" id="btnBase64" data-i18n="wdBase64">符箓转换 · Base64</button>
-        <button class="entry-link" id="btnJson" data-i18n="wdJson">JSON 规整</button>
-        <button class="entry-link" id="btnUrl" data-i18n="wdUrl">URL 符码</button>
-        <button class="entry-link" id="btnM3u8" data-i18n="wdM3u8">M3U8 影音匣</button>
-        <button class="entry-link" id="btnPi" data-i18n="wdPi">寻迹圆周率</button>
-        <button class="entry-link" id="btnBinary" data-i18n="wdBin">阴阳推演 · 二进制</button>
-        <button class="entry-link" id="btnTimer" data-i18n="wdTimer">漏刻计时</button>
-        <button class="entry-link" id="btnRouter" data-i18n="wdRouter">门庭洞开 · 路由</button>
-        <button class="entry-link" id="btnDevice" data-i18n="wdDevice">器皿探秘 · 设备</button>
+        <button class="entry-link" data-frame="测速推演|xncs.html">测速推演</button>
+        <button class="entry-link" id="btnWeb">游历 · 内嵌浏览器</button>
+        <button class="entry-link" id="btnCalc">算盘 · 计算器</button>
+        <button class="entry-link" id="btnColorGen">色号推演 · 颜色生成</button>
+        <button class="entry-link" id="btnBase64">符箓转换 · Base64</button>
+        <button class="entry-link" id="btnJson">JSON 规整</button>
+        <button class="entry-link" id="btnUrl">URL 符码</button>
+        <button class="entry-link" id="btnM3u8">M3U8 影音匣</button>
+        <button class="entry-link" id="btnPi">寻迹圆周率</button>
+        <button class="entry-link" id="btnBinary">阴阳推演 · 二进制</button>
+        <button class="entry-link" id="btnTimer">漏刻计时</button>
+        <button class="entry-link" id="btnRouter">门庭洞开 · 路由</button>
+        <button class="entry-link" id="btnDevice">器皿探秘 · 设备</button>
       </div>
-      <p style="margin-top:12px;font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);letter-spacing:.08em;" data-i18n="wdMore">其余奇巧，静候佳音</p>
+      <p style="margin-top:12px;font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);letter-spacing:.08em;">其余奇巧，静候佳音</p>
     </section>
 
     <section class="scroll-item fade-item">
-      <h2><span class="mark"></span><span data-i18n="secPages">Pages 同好坊</span></h2>
+      <h2><span class="mark"></span>Pages 同好坊</h2>
       <div class="link-row">
-        <button class="entry-link" data-frame="许愿柳|https://waxyl.pages.dev/" data-i18n="pgTree">许愿柳</button>
-        <button class="entry-link" data-frame="奶娃快跑|https://nailong-kuaipao.pages.dev/" data-i18n="pgRun">奶娃快跑</button>
+        <button class="entry-link" data-frame="许愿柳|https://waxyl.pages.dev/">许愿柳</button>
+        <button class="entry-link" data-frame="奶娃快跑|https://nailong-kuaipao.pages.dev/">奶娃快跑</button>
       </div>
-      <p style="margin-top:14px;text-align:left;font-size:11px;color:var(--ink-subtle);font-family:var(--font-sans);letter-spacing:.06em;" data-i18n="pgNote">皆为网络所拾</p>
+      <p style="margin-top:14px;text-align:left;font-size:11px;color:var(--ink-subtle);font-family:var(--font-sans);letter-spacing:.06em;">皆为网络所拾</p>
     </section>
 
   </main>
 
-  <footer class="footer" data-i18n="footer">MC 玩家工具站 · 古风版 · 纯前端</footer>
+  <footer class="footer">MC 玩家工具站 · 古风版 · 纯前端</footer>
 </div>
 
 <button id="backTop" title="返回顶部">↑</button>
@@ -710,7 +682,7 @@ input[type=range]:focus { outline: none; }
 <!-- 个人主页 -->
 <div class="win" id="profileWin" style="width:min(360px,92vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="profTitle">个人主页</span>
+    <span class="win-title">个人主页</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body">
@@ -722,24 +694,24 @@ input[type=range]:focus { outline: none; }
       <div style="font-size:20px;letter-spacing:.1em;color:var(--vermilion);font-weight:500;" id="profName">名号</div>
     </div>
     <div class="field" style="margin-bottom:14px;">
-      <label style="display:block;font-size:12px;color:var(--ink-muted);margin-bottom:6px;" data-i18n="profGender">男女</label>
+      <label style="display:block;font-size:12px;color:var(--ink-muted);margin-bottom:6px;">男女</label>
       <select id="profGender" style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:var(--font-sans);outline:none;">
-        <option value="保密" data-i18n="profG0">保密</option>
-        <option value="男" data-i18n="profG1">男</option>
-        <option value="女" data-i18n="profG2">女</option>
+        <option value="保密">保密</option>
+        <option value="男">男</option>
+        <option value="女">女</option>
       </select>
     </div>
     <div class="field" style="margin-bottom:14px;">
-      <label style="display:block;font-size:12px;color:var(--ink-muted);margin-bottom:6px;" data-i18n="profBirth">生辰</label>
+      <label style="display:block;font-size:12px;color:var(--ink-muted);margin-bottom:6px;">生辰</label>
       <input type="date" id="profBirthday" style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:var(--font-sans);outline:none;">
     </div>
     <div class="field" style="margin-bottom:20px;">
-      <label style="display:block;font-size:12px;color:var(--ink-muted);margin-bottom:6px;" data-i18n="profBio">寄语</label>
+      <label style="display:block;font-size:12px;color:var(--ink-muted);margin-bottom:6px;">寄语</label>
       <textarea id="profBio" rows="3" style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:var(--font-sans);font-size:13px;outline:none;resize:vertical;"></textarea>
     </div>
     <div style="display:flex;gap:10px;">
-      <button class="top-btn" id="profSaveBtn" style="flex:1;justify-content:center;" data-i18n="btnSave">保存</button>
-      <button class="top-btn" id="profLogoutBtn" style="flex:1;justify-content:center;color:var(--vermilion);border-color:var(--vermilion);" data-i18n="btnLogout">退出</button>
+      <button class="top-btn" id="profSaveBtn" style="flex:1;justify-content:center;">保存</button>
+      <button class="top-btn" id="profLogoutBtn" style="flex:1;justify-content:center;color:var(--vermilion);border-color:var(--vermilion);">退出</button>
     </div>
   </div>
 </div>
@@ -747,12 +719,12 @@ input[type=range]:focus { outline: none; }
 <!-- 音乐播放器窗口 -->
 <div class="win" id="musicWin" style="width:min(360px,92vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="musicTitle">古风音乐盒</span>
+    <span class="win-title">古风音乐盒</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body" style="text-align:center;">
-    <p style="font-size:13px;color:var(--ink-muted);font-family:var(--font-sans);margin-bottom:12px;" data-i18n="musicDesc">容 MP3 / WAV / OGG 等音律</p>
-    <label class="upload-label" style="margin-bottom:12px;padding:16px 8px;display:block;border:1px dashed var(--line);cursor:pointer;" data-i18n="musicSelect">
+    <p style="font-size:13px;color:var(--ink-muted);font-family:var(--font-sans);margin-bottom:12px;">容 MP3 / WAV / OGG 等音律</p>
+    <label class="upload-label" style="margin-bottom:12px;padding:16px 8px;display:block;border:1px dashed var(--line);cursor:pointer;">
       择本地佳音<input type="file" id="musicFileInput" accept="audio/*" style="display:none;">
     </label>
     <div id="audioPlayerContainer" style="display:none;margin-top:10px;">
@@ -765,39 +737,39 @@ input[type=range]:focus { outline: none; }
 <!-- 主题窗口 -->
 <div class="win" id="themeWin" style="width:min(380px,92vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="themeTitle">主题与壁纸</span>
+    <span class="win-title">主题与壁纸</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body">
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;letter-spacing:.16em;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:10px;" data-i18n="themeColor">配色</div>
+      <div style="font-size:12px;letter-spacing:.16em;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:10px;">配色</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;">
-        <button class="mode-btn" data-mode="light" data-i18n="tLight">宣纸白</button>
-        <button class="mode-btn" data-mode="qingyun" data-i18n="tGreen">青云绿</button>
-        <button class="mode-btn" data-mode="qinghua" data-i18n="tBlue">青花瓷</button>
-        <button class="mode-btn" data-mode="sakura" data-i18n="tPink">樱花粉</button>
-        <button class="mode-btn" data-mode="purple" data-i18n="tPurple">绛紫</button>
-        <button class="mode-btn" data-mode="yellow" data-i18n="tYellow">秋黄</button>
-        <button class="mode-btn" data-mode="dark" data-i18n="tDark">松烟墨</button>
+        <button class="mode-btn" data-mode="light">宣纸白</button>
+        <button class="mode-btn" data-mode="qingyun">青云绿</button>
+        <button class="mode-btn" data-mode="qinghua">青花瓷</button>
+        <button class="mode-btn" data-mode="sakura">樱花粉</button>
+        <button class="mode-btn" data-mode="purple">绛紫</button>
+        <button class="mode-btn" data-mode="yellow">秋黄</button>
+        <button class="mode-btn" data-mode="dark">松烟墨</button>
       </div>
     </div>
     
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;letter-spacing:.16em;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:10px;" data-i18n="themeWall">壁纸 · 图片 / 视频</div>
+      <div style="font-size:12px;letter-spacing:.16em;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:10px;">壁纸 · 图片 / 视频</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <label class="upload-label" data-i18n="wallImg">上传图片<input type="file" id="wallImgInput" accept="image/*" style="display:none;"></label>
-        <label class="upload-label" data-i18n="wallVid">上传视频<input type="file" id="wallVidInput" accept="video/*" style="display:none;"></label>
+        <label class="upload-label">上传图片<input type="file" id="wallImgInput" accept="image/*" style="display:none;"></label>
+        <label class="upload-label">上传视频<input type="file" id="wallVidInput" accept="video/*" style="display:none;"></label>
       </div>
-      <button id="clearWall" class="clear-wall" data-i18n="wallClear">清空壁纸</button>
+      <button id="clearWall" class="clear-wall">清空壁纸</button>
     </div>
 
     <div style="margin-bottom:14px;">
-      <div style="font-size:12px;letter-spacing:.16em;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:8px;" data-i18n="themeVol">视频音量（默静）</div>
+      <div style="font-size:12px;letter-spacing:.16em;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:8px;">视频音量（默静）</div>
       <input type="range" id="videoVolume" min="0" max="1" step="0.05" value="0">
     </div>
 
     <div>
-      <div style="font-size:12px;letter-spacing:.16em;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:8px;" data-i18n="themeOpa">壁纸不透明度</div>
+      <div style="font-size:12px;letter-spacing:.16em;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:8px;">壁纸不透明度</div>
       <input type="range" id="wallOpacity" min="0" max="1" step="0.02" value="0.14">
     </div>
   </div>
@@ -806,42 +778,41 @@ input[type=range]:focus { outline: none; }
 <!-- 语言窗口 -->
 <div class="win" id="langWin" style="width:min(280px,88vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="langTitle">择言语</span>
+    <span class="win-title">择言语</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body">
     <ul class="lang-list">
       <li class="active" data-lang="wenyan">文言文</li>
-      <li data-lang="zhCN">简体中文</li>
     </ul>
-    <p style="font-size:11px;color:var(--ink-subtle);font-family:var(--font-sans);margin-top:12px;text-align:center;" data-i18n="langNote">其余言语，后续添之</p>
+    <p style="font-size:11px;color:var(--ink-subtle);font-family:var(--font-sans);margin-top:12px;text-align:center;">其余言语，后续添之</p>
   </div>
 </div>
 
 <!-- 作者抖音 -->
 <div class="win" id="douyinWin" style="width:min(300px,88vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="douyinTitle">作者抖音</span>
+    <span class="win-title">作者抖音</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body" style="text-align:center;">
     <div style="font-size:22px;letter-spacing:.08em;color:var(--vermilion);padding:14px 0 8px;font-weight:500;">mc_huyxa</div>
-    <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);letter-spacing:.1em;line-height:1.8;" data-i18n="douyinHint">开抖音寻此号<br>即可遇知音</div>
+    <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);letter-spacing:.1em;line-height:1.8;">开抖音寻此号<br>即可遇知音</div>
   </div>
 </div>
 
 <!-- PCL 下载 -->
 <div class="win" id="pclWin" style="width:min(400px,90vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="pclTitle">PCL 2.13 下载</span>
+    <span class="win-title">PCL 2.13 下载</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body">
-    <p style="font-size:13px;line-height:2.1;color:var(--ink-muted);font-family:var(--font-sans);text-indent:2em;margin-bottom:16px;" data-i18n="pclDesc">
+    <p style="font-size:13px;line-height:2.1;color:var(--ink-muted);font-family:var(--font-sans);text-indent:2em;margin-bottom:16px;">
       因某讲席之时，家长幼童于某服充钱，家长举告PCL，新版PCL遂闭源Minecraft下载。本站特供PCL 2.13，安全无毒。
     </p>
     <div style="text-align:center;">
-      <a href="./Plain Craft Launcher 2.exe" download class="entry-link accent" style="padding:10px 24px;" data-i18n="pclDlBtn">下载 PCL 2.13 启动器</a>
+      <a href="./Plain Craft Launcher 2.exe" download class="entry-link accent" style="padding:10px 24px;">下载 PCL 2.13 启动器</a>
     </div>
   </div>
 </div>
@@ -849,20 +820,20 @@ input[type=range]:focus { outline: none; }
 <!-- Java 服务器 -->
 <div class="win" id="javaWin" style="width:min(340px,90vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="javaTitle">Java 版服务器信息</span>
+    <span class="win-title">Java 版服务器信息</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body">
-    <p style="font-size:13px;color:var(--ink-muted);font-family:var(--font-sans);margin-bottom:10px;" data-i18n="javaHint">服务器地址：</p>
+    <p style="font-size:13px;color:var(--ink-muted);font-family:var(--font-sans);margin-bottom:10px;">服务器地址：</p>
     <div id="javaAddr" style="border:1px dashed var(--gold);padding:10px 12px;font-size:15px;letter-spacing:.06em;cursor:pointer;text-align:center;transition:all .2s;">cn-hk1.mfrp.space:64032</div>
-    <p style="font-size:11px;color:var(--ink-subtle);font-family:var(--font-sans);margin-top:8px;text-align:center;" data-i18n="javaCopy">轻触此处，地址自入囊中</p>
+    <p style="font-size:11px;color:var(--ink-subtle);font-family:var(--font-sans);margin-top:8px;text-align:center;">轻触此处，地址自入囊中</p>
   </div>
 </div>
 
 <!-- 服务器状态查询 -->
 <div class="win iframe-win" id="statusWin" style="width:min(860px,92vw);height:min(620px,82vh);">
   <div class="win-header">
-    <span class="win-title" data-i18n="statusTitle">服务器状态查询</span>
+    <span class="win-title">服务器状态查询</span>
     <div class="win-actions">
       <button class="win-btn win-fs" title="全屏">⛶</button>
       <button class="win-close">×</button>
@@ -872,20 +843,20 @@ input[type=range]:focus { outline: none; }
     <iframe src="https://mcsrvstat.us/" allowfullscreen></iframe>
   </div>
   <div class="frame-hint">
-    <span data-i18n="frameHint">若此处空无一物，乃该站闭门拒客 — </span>
-    <a href="https://mcsrvstat.us/" target="_blank" rel="noopener" data-i18n="frameBtn">破窗而出 ↗</a>
+    若此处空无一物，乃该站闭门拒客 —
+    <a href="https://mcsrvstat.us/" target="_blank" rel="noopener">破窗而出 ↗</a>
   </div>
 </div>
 
 <!-- 颜色代码表 -->
 <div class="win" id="colorWin" style="width:min(460px,92vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="colorTitle">MC 颜色代码表</span>
+    <span class="win-title">MC 颜色代码表</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body">
     <div class="color-grid" id="colorGrid"></div>
-    <div style="font-size:11px;color:var(--ink-subtle);font-family:var(--font-sans);margin-top:14px;" data-i18n="colorFormat">格式代码：</div>
+    <div style="font-size:11px;color:var(--ink-subtle);font-family:var(--font-sans);margin-top:14px;">格式代码：</div>
     <div class="color-grid" id="formatGrid" style="margin-top:8px;"></div>
   </div>
 </div>
@@ -893,32 +864,32 @@ input[type=range]:focus { outline: none; }
 <!-- 稀有版本 -->
 <div class="win" id="rareWin" style="width:min(360px,90vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="rareTitle">我的世界稀有版本</span>
+    <span class="win-title">我的世界稀有版本</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body" style="text-align:center;">
-    <button class="entry-link" data-frame="我的世界传奇开发版本|https://1835013311.share.123pan.cn/123pan/LbsoTd-gTewd?pwd=sC6M#" data-i18n="rareBtn">我的世界传奇开发版本</button>
-    <p style="margin-top:18px;font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);" data-i18n="rareHint">其余版本，静候佳音</p>
+    <button class="entry-link" data-frame="我的世界传奇开发版本|https://1835013311.share.123pan.cn/123pan/LbsoTd-gTewd?pwd=sC6M#">我的世界传奇开发版本</button>
+    <p style="margin-top:18px;font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);">其余版本，静候佳音</p>
   </div>
 </div>
 
 <!-- 关于 -->
 <div class="win" id="aboutWin" style="width:min(380px,90vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="aboutTitle">关于本站</span>
+    <span class="win-title">关于本站</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body">
-    <p style="font-size:13px;line-height:2.1;color:var(--ink-muted);font-family:var(--font-sans);margin-bottom:14px;" data-i18n="aboutDesc">
+    <p style="font-size:13px;line-height:2.1;color:var(--ink-muted);font-family:var(--font-sans);margin-bottom:14px;">
       此为 MC 基岩版玩家自制之雅地，集下载、联机、查询诸般奇巧于此。所藏资材，仅供研学交流耳。
     </p>
     <div style="border-top:1px dashed var(--line);padding-top:14px;">
-      <div style="font-size:12px;letter-spacing:.16em;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:10px;" data-i18n="aboutFeat">本站特色</div>
+      <div style="font-size:12px;letter-spacing:.16em;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:10px;">本站特色</div>
       <p style="font-size:13px;line-height:2;color:var(--ink-muted);font-family:var(--font-sans);">
-        <span class="feature-badge" data-i18n="feat1B">古风</span><span data-i18n="feat1T">宣纸墨色，雅致界面</span><br>
-        <span class="feature-badge" data-i18n="feat2B">多窗</span><span data-i18n="feat2T">窗口可拖拽、缩放、多开</span><br>
-        <span class="feature-badge" data-i18n="feat3B">内嵌</span><span data-i18n="feat3T">外链皆以内嵌窗呈现</span><br>
-        <span class="feature-badge" data-i18n="feat4B">主题</span><span data-i18n="feat4T">多套配色，随心切换</span>
+        <span class="feature-badge">古风</span>宣纸墨色，雅致界面<br>
+        <span class="feature-badge">多窗</span>窗口可拖拽、缩放、多开<br>
+        <span class="feature-badge">内嵌</span>外链皆以内嵌窗呈现<br>
+        <span class="feature-badge">主题</span>多套配色，随心切换
       </p>
     </div>
   </div>
@@ -927,21 +898,21 @@ input[type=range]:focus { outline: none; }
 <!-- 更新日志 -->
 <div class="win" id="logWin" style="width:min(380px,90vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="logTitle">更新日志</span>
+    <span class="win-title">更新日志</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body">
     <ul class="log-list">
-      <li><b>1.0</b> <span data-i18n="log1">初建此站</span></li>
-      <li><b>1.1</b> <span data-i18n="log2">增补奇巧</span></li>
-      <li><b>1.2</b> <span data-i18n="log3">增补奇巧</span></li>
-      <li><b>1.3</b> <span data-i18n="log4">修补残缺</span></li>
-      <li><b>1.4</b> <span data-i18n="log5">润色装潢，迁于cloudflare</span></li>
-      <li><b>1.5</b> <span data-i18n="log6">增补奇巧</span></li>
-      <li><b>1.6</b> <span data-i18n="log7">修补残缺</span></li>
-      <li><b>1.7</b> <span data-i18n="log8">铺设背景</span></li>
-      <li><b>2.0</b> <span data-i18n="log9">推倒重来，重塑古风</span></li>
-      <li><b>2.1</b> <span data-i18n="log10">增补奇巧，修补残缺</span></li>
+      <li><b>1.0</b> 初建此站</li>
+      <li><b>1.1</b> 增补奇巧</li>
+      <li><b>1.2</b> 增补奇巧</li>
+      <li><b>1.3</b> 修补残缺</li>
+      <li><b>1.4</b> 润色装潢，迁于cloudflare</li>
+      <li><b>1.5</b> 增补奇巧</li>
+      <li><b>1.6</b> 修补残缺</li>
+      <li><b>1.7</b> 铺设背景</li>
+      <li><b>2.0</b> 推倒重来，重塑古风</li>
+      <li><b>2.1</b> 增补奇巧，修补残缺</li>
     </ul>
   </div>
 </div>
@@ -949,7 +920,7 @@ input[type=range]:focus { outline: none; }
 <!-- MCJS 内嵌窗口 -->
 <div class="win iframe-win" id="mcWin" style="width:min(860px,92vw);height:min(620px,82vh);">
   <div class="win-header">
-    <span class="win-title" data-i18n="mcTitle">我的世界MCJS · 内嵌窗</span>
+    <span class="win-title">我的世界MCJS · 内嵌窗</span>
     <div class="win-actions">
       <button class="win-btn win-fs" title="全屏">⛶</button>
       <button class="win-close">×</button>
@@ -959,15 +930,15 @@ input[type=range]:focus { outline: none; }
     <iframe src="https://mcjs.link/" allowfullscreen></iframe>
   </div>
   <div class="frame-hint">
-    <span data-i18n="frameHint">若此处空无一物，乃该站闭门拒客 — </span>
-    <a href="https://mcjs.link/" target="_blank" rel="noopener" data-i18n="frameBtn">破窗而出 ↗</a>
+    若此处空无一物，乃该站闭门拒客 —
+    <a href="https://mcjs.link/" target="_blank" rel="noopener">破窗而出 ↗</a>
   </div>
 </div>
 
 <!-- 内嵌浏览器 -->
 <div class="win iframe-win" id="webWin" style="width:min(860px,92vw);height:min(620px,82vh);">
   <div class="win-header">
-    <span class="win-title" data-i18n="webTitle">游历 · 内嵌浏览器</span>
+    <span class="win-title">游历 · 内嵌浏览器</span>
     <div class="win-actions">
       <button class="win-btn win-fs" title="全屏">⛶</button>
       <button class="win-close">×</button>
@@ -975,21 +946,21 @@ input[type=range]:focus { outline: none; }
   </div>
   <div style="padding:8px;border-bottom:1px solid var(--line);background:var(--paper-deep);display:flex;gap:8px;">
     <input type="text" id="webUrlInput" placeholder="https://" style="flex:1;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 10px;font-family:var(--font-sans);outline:none;">
-    <button id="webGoBtn" class="top-btn" style="padding:4px 16px;" data-i18n="webGo">造访</button>
+    <button id="webGoBtn" class="top-btn" style="padding:4px 16px;">造访</button>
   </div>
   <div class="win-body">
     <iframe id="webIframe" src="about:blank" allowfullscreen></iframe>
   </div>
   <div class="frame-hint">
-    <span data-i18n="frameHint">若此处空无一物，乃该站闭门拒客 — </span>
-    <a id="webNewWin" href="#" target="_blank" data-i18n="frameBtn">破窗而出 ↗</a>
+    若此处空无一物，乃该站闭门拒客 —
+    <a id="webNewWin" href="#" target="_blank">破窗而出 ↗</a>
   </div>
 </div>
 
 <!-- 计算器 -->
 <div class="win" id="calcWin" style="width:min(300px,90vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="calcTitle">算盘 · 计算器</span>
+    <span class="win-title">算盘 · 计算器</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body" style="padding:12px;">
@@ -1021,7 +992,7 @@ input[type=range]:focus { outline: none; }
 <!-- 色号推演 -->
 <div class="win" id="colorGenWin" style="width:min(360px,92vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="colorGenTitle">色号推演 · 颜色生成</span>
+    <span class="win-title">色号推演 · 颜色生成</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body">
@@ -1047,20 +1018,20 @@ input[type=range]:focus { outline: none; }
 <!-- 符箓转换 -->
 <div class="win" id="base64Win" style="width:min(420px,92vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="base64Title">符箓转换 · Base64</span>
+    <span class="win-title">符箓转换 · Base64</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body">
     <div style="margin-bottom:10px;">
-      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;" data-i18n="base64Ori">原文</div>
+      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;">原文</div>
       <textarea id="b64Input" rows="3" style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:var(--font-sans);font-size:13px;outline:none;resize:vertical;"></textarea>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <button class="top-btn" id="b64EncodeBtn" style="flex:1;" data-i18n="base64Enc">编码</button>
-      <button class="top-btn" id="b64DecodeBtn" style="flex:1;" data-i18n="base64Dec">解码</button>
+      <button class="top-btn" id="b64EncodeBtn" style="flex:1;">编码</button>
+      <button class="top-btn" id="b64DecodeBtn" style="flex:1;">解码</button>
     </div>
     <div>
-      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;" data-i18n="base64Out">符箓</div>
+      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;">符箓</div>
       <textarea id="b64Output" rows="3" readonly style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:var(--font-sans);font-size:13px;outline:none;resize:vertical;"></textarea>
     </div>
   </div>
@@ -1069,20 +1040,20 @@ input[type=range]:focus { outline: none; }
 <!-- JSON 规整 -->
 <div class="win" id="jsonWin" style="width:min(600px,92vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="jsonTitle">JSON 规整</span>
+    <span class="win-title">JSON 规整</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body">
     <div style="margin-bottom:10px;">
-      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;" data-i18n="jsonIn">输入 JSON</div>
+      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;">输入 JSON</div>
       <textarea id="jsonInput" rows="5" style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:monospace;font-size:13px;outline:none;resize:vertical;"></textarea>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <button class="top-btn" id="jsonFormatBtn" style="flex:1;" data-i18n="jsonFmt">格式化</button>
-      <button class="top-btn" id="jsonMinifyBtn" style="flex:1;" data-i18n="jsonMin">压缩</button>
+      <button class="top-btn" id="jsonFormatBtn" style="flex:1;">格式化</button>
+      <button class="top-btn" id="jsonMinifyBtn" style="flex:1;">压缩</button>
     </div>
     <div>
-      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;" data-i18n="jsonOut">输出</div>
+      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;">输出</div>
       <textarea id="jsonOutput" rows="5" readonly style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:monospace;font-size:13px;outline:none;resize:vertical;"></textarea>
     </div>
   </div>
@@ -1091,20 +1062,20 @@ input[type=range]:focus { outline: none; }
 <!-- URL 符码 -->
 <div class="win" id="urlWin" style="width:min(600px,92vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="urlTitle">URL 符码</span>
+    <span class="win-title">URL 符码</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body">
     <div style="margin-bottom:10px;">
-      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;" data-i18n="urlIn">输入文本</div>
+      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;">输入文本</div>
       <textarea id="urlInput" rows="3" style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:var(--font-sans);font-size:13px;outline:none;resize:vertical;"></textarea>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <button class="top-btn" id="urlEncodeBtn" style="flex:1;" data-i18n="base64Enc">编码</button>
-      <button class="top-btn" id="urlDecodeBtn" style="flex:1;" data-i18n="base64Dec">解码</button>
+      <button class="top-btn" id="urlEncodeBtn" style="flex:1;">编码</button>
+      <button class="top-btn" id="urlDecodeBtn" style="flex:1;">解码</button>
     </div>
     <div>
-      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;" data-i18n="jsonOut">输出</div>
+      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;">输出</div>
       <textarea id="urlOutput" rows="3" readonly style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:var(--font-sans);font-size:13px;outline:none;resize:vertical;"></textarea>
     </div>
   </div>
@@ -1113,13 +1084,13 @@ input[type=range]:focus { outline: none; }
 <!-- M3U8 / 本地视频影音匣 -->
 <div class="win" id="m3u8Win" style="width:min(860px,92vw);height:min(620px,82vh);">
   <div class="win-header">
-    <span class="win-title" data-i18n="m3u8Title">M3U8 影音匣</span>
+    <span class="win-title">M3U8 影音匣</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div style="padding:8px;border-bottom:1px solid var(--line);background:var(--paper-deep);display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-    <input type="text" id="m3u8Input" placeholder="填网络流径或直链（m3u8/mp4），亦可点右侧择本地影音" data-i18n-ph="m3u8In" style="flex:1;min-width:200px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 10px;font-family:var(--font-sans);outline:none;">
-    <button id="m3u8PlayBtn" class="top-btn" style="padding:4px 16px;" data-i18n="m3u8Play">观影</button>
-    <label class="top-btn" style="padding:4px 16px;cursor:pointer;margin:0;" data-i18n="m3u8Local">
+    <input type="text" id="m3u8Input" placeholder="填网络流径或直链（m3u8/mp4），亦可点右侧择本地影音" style="flex:1;min-width:200px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 10px;font-family:var(--font-sans);outline:none;">
+    <button id="m3u8PlayBtn" class="top-btn" style="padding:4px 16px;">观影</button>
+    <label class="top-btn" style="padding:4px 16px;cursor:pointer;margin:0;">
       择本地卷轴<input type="file" id="localVideoInput" accept="video/*" style="display:none;">
     </label>
   </div>
@@ -1131,15 +1102,15 @@ input[type=range]:focus { outline: none; }
 <!-- 寻迹圆周率 -->
 <div class="win" id="piWin" style="width:min(360px,92vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="piTitle">寻迹圆周率</span>
+    <span class="win-title">寻迹圆周率</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body">
-    <p style="font-size:13px;line-height:2.1;color:var(--ink-muted);font-family:var(--font-sans);text-indent:2em;margin-bottom:16px;" data-i18n="piDesc">
+    <p style="font-size:13px;line-height:2.1;color:var(--ink-muted);font-family:var(--font-sans);text-indent:2em;margin-bottom:16px;">
       此术需借 Python 之力，当先备 Python 之境。于圆周率无尽之数中，寻汝生辰之位。
     </p>
     <div style="text-align:center;">
-      <a href="./pifindbirthday.py" download class="entry-link accent" style="padding:10px 24px;" data-i18n="piBtn">下载 pifindbirthday.py</a>
+      <a href="./pifindbirthday.py" download class="entry-link accent" style="padding:10px 24px;">下载 pifindbirthday.py</a>
     </div>
   </div>
 </div>
@@ -1147,20 +1118,20 @@ input[type=range]:focus { outline: none; }
 <!-- 二进制推演 -->
 <div class="win" id="binaryWin" style="width:min(600px,92vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="binTitle">阴阳推演 · 二进制</span>
+    <span class="win-title">阴阳推演 · 二进制</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body">
     <div style="margin-bottom:10px;">
-      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;" data-i18n="binIn">文本 / 二进制</div>
+      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;">文本 / 二进制</div>
       <textarea id="binInput" rows="4" style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:monospace;font-size:13px;outline:none;resize:vertical;"></textarea>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <button class="top-btn" id="binToTextBtn" style="flex:1;" data-i18n="binToTxt">阴阳化文</button>
-      <button class="top-btn" id="textToBinBtn" style="flex:1;" data-i18n="txtToBin">文化阴阳</button>
+      <button class="top-btn" id="binToTextBtn" style="flex:1;">阴阳化文</button>
+      <button class="top-btn" id="textToBinBtn" style="flex:1;">文化阴阳</button>
     </div>
     <div>
-      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;" data-i18n="jsonOut">输出</div>
+      <div style="font-size:12px;color:var(--ink-subtle);font-family:var(--font-sans);margin-bottom:6px;">输出</div>
       <textarea id="binOutput" rows="4" readonly style="width:100%;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:8px;font-family:monospace;font-size:13px;outline:none;resize:vertical;"></textarea>
     </div>
   </div>
@@ -1169,7 +1140,7 @@ input[type=range]:focus { outline: none; }
 <!-- 漏刻计时 -->
 <div class="win" id="timerWin" style="width:min(340px,92vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="timerTitle">漏刻计时</span>
+    <span class="win-title">漏刻计时</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body" style="text-align:center;">
@@ -1177,45 +1148,49 @@ input[type=range]:focus { outline: none; }
     
     <div style="display:flex;gap:10px;justify-content:center;margin-bottom:14px;">
       <div>
-        <input type="number" id="timerMinInput" value="0" min="0" max="999" style="width:60px;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:6px;text-align:center;outline:none;border-radius:4px;font-family:var(--font-sans);"> <span style="font-size:12px;color:var(--ink-muted);" data-i18n="timerMin">分</span>
+        <input type="number" id="timerMinInput" value="0" min="0" max="999" style="width:60px;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:6px;text-align:center;outline:none;border-radius:4px;font-family:var(--font-sans);"> <span style="font-size:12px;color:var(--ink-muted);">分</span>
       </div>
       <div>
-        <input type="number" id="timerSecInput" value="0" min="0" max="59" style="width:60px;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:6px;text-align:center;outline:none;border-radius:4px;font-family:var(--font-sans);"> <span style="font-size:12px;color:var(--ink-muted);" data-i18n="timerSec">秒</span>
+        <input type="number" id="timerSecInput" value="0" min="0" max="59" style="width:60px;border:1px solid var(--line);background:var(--paper-deep);color:var(--ink);padding:6px;text-align:center;outline:none;border-radius:4px;font-family:var(--font-sans);"> <span style="font-size:12px;color:var(--ink-muted);">秒</span>
       </div>
     </div>
 
     <div style="display:flex;gap:10px;justify-content:center;margin-bottom:14px;">
-      <button class="top-btn" id="timerStartBtn" style="flex:1;justify-content:center;" data-i18n="timerStart">开启</button>
-      <button class="top-btn" id="timerResetBtn" style="flex:1;justify-content:center;" data-i18n="timerReset">重置</button>
+      <button class="top-btn" id="timerStartBtn" style="flex:1;justify-content:center;">开启</button>
+      <button class="top-btn" id="timerResetBtn" style="flex:1;justify-content:center;">重置</button>
     </div>
-    <p style="font-size:11px;color:var(--ink-subtle);font-family:var(--font-sans);" data-i18n="timerDesc">此漏刻可行倒转漏尽，以观岁月。</p>
+    <p style="font-size:11px;color:var(--ink-subtle);font-family:var(--font-sans);">此漏刻可行倒转漏尽，以观岁月。</p>
   </div>
 </div>
 
 <!-- 门庭洞开 · 路由 -->
 <div class="win" id="routerWin" style="width:min(460px,92vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="routerTitle">门庭洞开 · 路由</span>
+    <span class="win-title">门庭洞开 · 路由</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body">
-    <p style="font-size:12px;color:var(--ink-muted);font-family:var(--font-sans);margin-bottom:10px;text-align:center;" data-i18n="routerDesc">拨动轮盘，拼凑门庭之径（内网 IP）</p>
+    <p style="font-size:12px;color:var(--ink-muted);font-family:var(--font-sans);margin-bottom:10px;text-align:center;">拨动轮盘，拼凑门庭之径（内网 IP）</p>
     <div class="wheel-container">
+      <!-- 第一段 -->
       <div class="wheel">
         <button type="button" class="wheel-btn" data-dir="1" data-idx="0">▲</button>
         <div class="wheel-val" id="wheel0">192</div>
         <button type="button" class="wheel-btn" data-dir="-1" data-idx="0">▼</button>
       </div>
+      <!-- 第二段 -->
       <div class="wheel">
         <button type="button" class="wheel-btn" data-dir="1" data-idx="1">▲</button>
         <div class="wheel-val" id="wheel1">168</div>
         <button type="button" class="wheel-btn" data-dir="-1" data-idx="1">▼</button>
       </div>
+      <!-- 第三段 -->
       <div class="wheel">
         <button type="button" class="wheel-btn" data-dir="1" data-idx="2">▲</button>
         <div class="wheel-val" id="wheel2">1</div>
         <button type="button" class="wheel-btn" data-dir="-1" data-idx="2">▼</button>
       </div>
+      <!-- 第四段 -->
       <div class="wheel">
         <button type="button" class="wheel-btn" data-dir="1" data-idx="3">▲</button>
         <div class="wheel-val" id="wheel3">1</div>
@@ -1226,7 +1201,7 @@ input[type=range]:focus { outline: none; }
       <input type="number" id="wheelOtherInput" class="wheel-input" style="border:1px solid var(--line); padding:6px;" placeholder="请填入 1~255 之数">
     </div>
     <div style="margin-top:20px;text-align:center;">
-      <button class="entry-link accent" id="routerGoBtn" style="width:100%;" data-i18n="routerGo">推门而入 ↗</button>
+      <button class="entry-link accent" id="routerGoBtn" style="width:100%;">推门而入 ↗</button>
     </div>
   </div>
 </div>
@@ -1234,10 +1209,11 @@ input[type=range]:focus { outline: none; }
 <!-- 器皿探秘 · 设备 -->
 <div class="win" id="deviceWin" style="width:min(460px,92vw);">
   <div class="win-header">
-    <span class="win-title" data-i18n="deviceTitle">器皿探秘 · 设备</span>
+    <span class="win-title">器皿探秘 · 设备</span>
     <div class="win-actions"><button class="win-close">×</button></div>
   </div>
   <div class="win-body" id="deviceInfoBody">
+    <!-- 内容由 JS 注入 -->
     <div style="font-size:13px;color:var(--ink-muted);text-align:center;padding:20px;">正在推演算理…</div>
   </div>
 </div>
@@ -1246,254 +1222,6 @@ input[type=range]:focus { outline: none; }
 <script>
 (function () {
   const html = document.documentElement;
-  
-  /* ============================================================
-     0. 全局变量与数据字典声明（必须放在最前面防止 TDZ 报错）
-     ============================================================ */
-  let currentLang = localStorage.getItem('moju_lang') || 'wenyan';
-  let currentUser = null;
-  try { currentUser = JSON.parse(localStorage.getItem('moju_current_user') || 'null'); } catch (e) {}
-
-  const i18n = {
-    wenyan: {
-      title: "MC<em>·</em>玩家工具站",
-      subtitle: "方块千秋 · 自留雅地",
-      music: "音乐盒",
-      douyin: "作者抖音",
-      lang: "语言",
-      login: "入卷",
-      theme: "主题",
-      secDownload: "游艺下载",
-      secServer: "联机之所",
-      secWeb: "云游之界",
-      secTools: "博查利器",
-      secMisc: "杂类",
-      secWonder: "奇巧百宝",
-      secPages: "Pages 同好坊",
-      footer: "MC 玩家工具站 · 古风版 · 纯前端",
-      dlAndroid: "安卓版 MC 基岩版下载",
-      dlWin: "Windows MC 基岩版下载",
-      dlPcl: "PCL 2.13 下载",
-      svrStop: "加入我的 MC 基岩版服务器（停服）",
-      svrJava: "MC Java 版服务器",
-      webMcjs: "我的世界MCJS · 内嵌窗",
-      tlSeed: "种子码查询",
-      tlWiki: "Minecraft 维基百科",
-      tlEnchant: "附魔计算器",
-      tlStatus: "服务器状态查询",
-      tlCmds: "游戏指令速查表",
-      tlMcTools: "Minecraft Tools",
-      tlMcNav: "MCNav 导航",
-      tlXzTool: "小舟工具箱",
-      tlStacker: "MCStacker 指令生成",
-      tlHeads: "Minecraft Heads",
-      tlText: "Textcraft 艺术字",
-      tlMcMod: "MC百科",
-      msColor: "颜色代码表",
-      msRare: "我的世界稀有版本",
-      msAbout: "关于",
-      msLog: "更新日志",
-      wdSpeed: "测速推演",
-      wdBrowser: "游历 · 内嵌浏览器",
-      wdCalc: "算盘 · 计算器",
-      wdColorGen: "色号推演 · 颜色生成",
-      wdBase64: "符箓转换 · Base64",
-      wdJson: "JSON 规整",
-      wdUrl: "URL 符码",
-      wdM3u8: "M3U8 影音匣",
-      wdPi: "寻迹圆周率",
-      wdBin: "阴阳推演 · 二进制",
-      wdTimer: "漏刻计时",
-      wdRouter: "门庭洞开 · 路由",
-      wdDevice: "器皿探秘 · 设备",
-      wdMore: "其余奇巧，静候佳音",
-      pgTree: "许愿柳",
-      pgRun: "奶娃快跑",
-      pgNote: "皆为网络所拾",
-      frameHint: "若此处空无一物，乃该站闭门拒客 — ",
-      frameBtn: "破窗而出 ↗",
-      profTitle: "个人主页",
-      profGender: "男女",
-      profG0: "保密", profG1: "男", profG2: "女",
-      profBirth: "生辰",
-      profBio: "寄语",
-      btnSave: "保存",
-      btnLogout: "退出",
-      musicTitle: "古风音乐盒", musicDesc: "容 MP3 / WAV / OGG 等音律", musicSelect: "择本地佳音",
-      themeTitle: "主题与壁纸", themeColor: "配色", tLight: "宣纸白", tGreen: "青云绿", tBlue: "青花瓷", tPink: "樱花粉", tPurple: "绛紫", tYellow: "秋黄", tDark: "松烟墨", themeWall: "壁纸 · 图片 / 视频", wallImg: "上传图片", wallVid: "上传视频", wallClear: "清空壁纸", themeVol: "视频音量（默静）", themeOpa: "壁纸不透明度",
-      langTitle: "择言语", langNote: "其余言语，后续添之",
-      douyinTitle: "作者抖音", douyinHint: "开抖音寻此号<br>即可遇知音",
-      pclTitle: "PCL 2.13 下载", pclDesc: "因某讲席之时，家长幼童于某服充钱，家长举告PCL，新版PCL遂闭源Minecraft下载。本站特供PCL 2.13，安全无毒。", pclDlBtn: "下载 PCL 2.13 启动器",
-      javaTitle: "Java 版服务器信息", javaHint: "服务器地址：", javaCopy: "轻触此处，地址自入囊中",
-      statusTitle: "服务器状态查询",
-      colorTitle: "MC 颜色代码表", colorFormat: "格式代码：",
-      rareTitle: "我的世界稀有版本", rareBtn: "我的世界传奇开发版本", rareHint: "其余版本，静候佳音",
-      aboutTitle: "关于本站", aboutDesc: "此为 MC 基岩版玩家自制之雅地，集下载、联机、查询诸般奇巧于此。所藏资材，仅供研学交流耳。", aboutFeat: "本站特色", feat1B: "古风", feat1T: "宣纸墨色，雅致界面", feat2B: "多窗", feat2T: "窗口可拖拽、缩放、多开", feat3B: "内嵌", feat3T: "外链皆以内嵌窗呈现", feat4B: "主题", feat4T: "多套配色，随心切换",
-      logTitle: "更新日志", log1: "初建此站", log2: "增补奇巧", log3: "增补奇巧", log4: "修补残缺", log5: "润色装潢，迁于cloudflare", log6: "增补奇巧", log7: "修补残缺", log8: "铺设背景", log9: "推倒重来，重塑古风", log10: "增补奇巧，修补残缺",
-      mcTitle: "我的世界MCJS · 内嵌窗",
-      webTitle: "游历 · 内嵌浏览器", webGo: "造访",
-      calcTitle: "算盘 · 计算器",
-      colorGenTitle: "色号推演 · 颜色生成",
-      base64Title: "符箓转换 · Base64", base64Ori: "原文", base64Enc: "编码", base64Dec: "解码", base64Out: "符箓",
-      jsonTitle: "JSON 规整", jsonIn: "输入 JSON", jsonFmt: "格式化", jsonMin: "压缩", jsonOut: "输出",
-      urlTitle: "URL 符码", urlIn: "输入文本",
-      m3u8Title: "M3U8 影音匣", m3u8In: "填网络流径或直链（m3u8/mp4），亦可点右侧择本地影音", m3u8Play: "观影", m3u8Local: "择本地卷轴",
-      piTitle: "寻迹圆周率", piDesc: "此术需借 Python 之力，当先备 Python 之境。于圆周率无尽之数中，寻汝生辰之位。", piBtn: "下载 pifindbirthday.py",
-      binTitle: "阴阳推演 · 二进制", binIn: "文本 / 二进制", binToTxt: "阴阳化文", txtToBin: "文化阴阳",
-      timerTitle: "漏刻计时", timerMin: "分", timerSec: "秒", timerStart: "开启", timerReset: "重置", timerDesc: "此漏刻可行倒转漏尽，以观岁月。",
-      routerTitle: "门庭洞开 · 路由", routerDesc: "拨动轮盘，拼凑门庭之径（内网 IP）", routerGo: "推门而入 ↗",
-      deviceTitle: "器皿探秘 · 设备"
-    },
-    zhCN: {
-      title: "MC<em>·</em>玩家工具站",
-      subtitle: "方块千秋 · 自留雅地",
-      music: "音乐盒",
-      douyin: "作者抖音",
-      lang: "语言",
-      login: "登录",
-      theme: "主题",
-      secDownload: "游戏下载",
-      secServer: "服务器",
-      secWeb: "网页版",
-      secTools: "查询与工具",
-      secMisc: "其他",
-      secWonder: "实用工具",
-      secPages: "同好推荐",
-      footer: "MC 玩家工具站 · 古风版 · 纯前端",
-      dlAndroid: "安卓版 MC 基岩版下载",
-      dlWin: "Windows MC 基岩版下载",
-      dlPcl: "PCL 2.13 下载",
-      svrStop: "加入我的 MC 基岩版服务器（停服）",
-      svrJava: "MC Java 版服务器",
-      webMcjs: "我的世界MCJS · 内嵌窗",
-      tlSeed: "种子码查询",
-      tlWiki: "Minecraft 维基百科",
-      tlEnchant: "附魔计算器",
-      tlStatus: "服务器状态查询",
-      tlCmds: "游戏指令速查表",
-      tlMcTools: "Minecraft Tools",
-      tlMcNav: "MCNav 导航",
-      tlXzTool: "小舟工具箱",
-      tlStacker: "MCStacker 指令生成",
-      tlHeads: "Minecraft Heads",
-      tlText: "Textcraft 艺术字",
-      tlMcMod: "MC百科",
-      msColor: "颜色代码表",
-      msRare: "我的世界稀有版本",
-      msAbout: "关于",
-      msLog: "更新日志",
-      wdSpeed: "性能测试",
-      wdBrowser: "内嵌浏览器",
-      wdCalc: "计算器",
-      wdColorGen: "颜色生成",
-      wdBase64: "Base64 转换",
-      wdJson: "JSON 格式化",
-      wdUrl: "URL 编码",
-      wdM3u8: "M3U8 播放器",
-      wdPi: "圆周率找生日",
-      wdBin: "二进制转换",
-      wdTimer: "计时器",
-      wdRouter: "路由器后台",
-      wdDevice: "设备信息",
-      wdMore: "更多工具敬请期待",
-      pgTree: "许愿柳",
-      pgRun: "奶娃快跑",
-      pgNote: "皆来源于网络",
-      frameHint: "若内容空白，说明该站禁止内嵌 — ",
-      frameBtn: "新窗打开 ↗",
-      profTitle: "个人主页",
-      profGender: "性别",
-      profG0: "保密", profG1: "男", profG2: "女",
-      profBirth: "生日",
-      profBio: "签名",
-      btnSave: "保存",
-      btnLogout: "退出",
-      musicTitle: "音乐播放器", musicDesc: "支持 MP3 / WAV / OGG 等本地音频", musicSelect: "选择本地歌曲",
-      themeTitle: "主题与壁纸", themeColor: "配色", tLight: "宣纸白", tGreen: "青云绿", tBlue: "青花瓷", tPink: "樱花粉", tPurple: "绛紫", tYellow: "秋黄", tDark: "松烟墨", themeWall: "壁纸 · 图片 / 视频", wallImg: "上传图片", wallVid: "上传视频", wallClear: "清空壁纸", themeVol: "视频音量（默认静音）", themeOpa: "壁纸不透明度",
-      langTitle: "选择语言", langNote: "更多语言后续添加",
-      douyinTitle: "作者抖音", douyinHint: "打开抖音搜索此号<br>即可找到作者",
-      pclTitle: "PCL 2.13 下载", pclDesc: "由于某个讲解时家长小孩在某服务器充钱，家长举报PCL，新版PCL不再提供Minecraft下载，本站提供PCL 2.13下载，安全无毒。", pclDlBtn: "下载 PCL 2.13 启动器",
-      javaTitle: "Java 版服务器信息", javaHint: "服务器地址：", javaCopy: "点击地址即可复制",
-      statusTitle: "服务器状态查询",
-      colorTitle: "MC 颜色代码表", colorFormat: "格式代码：",
-      rareTitle: "我的世界稀有版本", rareBtn: "我的世界传奇开发版本", rareHint: "更多版本敬请期待",
-      aboutTitle: "关于本站", aboutDesc: "这是一个 MC 基岩版玩家自制站点，提供下载、联机工具、游戏查询等功能。所有资源仅供玩家学习交流使用。", aboutFeat: "本站特色", feat1B: "古风", feat1T: "宣纸墨色，雅致界面", feat2B: "多窗", feat2T: "窗口可拖拽、缩放、多开", feat3B: "内嵌", feat3T: "外链皆以内嵌窗呈现", feat4B: "主题", feat4T: "多套配色，随心切换",
-      logTitle: "更新日志", log1: "创建该网页", log2: "加入更多功能", log3: "加入更多功能", log4: "修复一些bug", log5: "美化网页，部署到cloudflare", log6: "加入更多功能", log7: "修复一些bug", log8: "加入背景", log9: "彻底重写网页，更换新风格", log10: "增补奇巧，修补残缺",
-      mcTitle: "我的世界MCJS · 内嵌窗",
-      webTitle: "内嵌浏览器", webGo: "造访",
-      calcTitle: "计算器",
-      colorGenTitle: "颜色生成",
-      base64Title: "Base64 转换", base64Ori: "原文", base64Enc: "编码", base64Dec: "解码", base64Out: "结果",
-      jsonTitle: "JSON 格式化", jsonIn: "输入 JSON", jsonFmt: "格式化", jsonMin: "压缩", jsonOut: "输出",
-      urlTitle: "URL 编码", urlIn: "输入文本",
-      m3u8Title: "M3U8 播放器", m3u8In: "支持 .m3u8 或 .mp4 链接，亦可点右侧选择本地视频", m3u8Play: "播放", m3u8Local: "选择本地视频",
-      piTitle: "圆周率找生日", piDesc: "本工具为Python软件，需要Python环境。", piBtn: "下载 pifindbirthday.py",
-      binTitle: "二进制转换", binIn: "文本 / 二进制", binToTxt: "转文本", txtToBin: "转二进制",
-      timerTitle: "计时器", timerMin: "分", timerSec: "秒", timerStart: "开始", timerReset: "重置", timerDesc: "倒计时结束后将自动提示。",
-      routerTitle: "路由器后台", routerDesc: "拨动轮盘，拼凑内网 IP", routerGo: "打开路由器 ↗",
-      deviceTitle: "设备信息"
-    }
-  };
-
-  /* ============================================================
-     0.1 函数声明区
-     ============================================================ */
-  function escapeHtml(str) {
-    return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
-  }
-
-  function renderLoginTip() {
-    const tip = document.getElementById('loginTip');
-    if (currentUser && currentUser.name) {
-      let avatarUrl = '';
-      try {
-        const profileData = JSON.parse(localStorage.getItem('moju_user_profile_' + currentUser.name) || 'null');
-        if (profileData && profileData.avatar) {
-          avatarUrl = `<img src="${profileData.avatar}" style="width:20px; height:20px; border-radius:50%; object-fit:cover; margin-right:4px; vertical-align:middle; margin-top:-2px;">`;
-        }
-      } catch(e) {}
-      
-      let prefix = currentLang === 'zhCN' ? '已登录 · ' : '入卷者 · ';
-      tip.innerHTML = `${avatarUrl}${prefix}<strong style="font-weight:500;">${escapeHtml(currentUser.name)}</strong>`;
-      tip.href = 'javascript:void(0)';
-      tip.title = currentLang === 'zhCN' ? '点击查看个人主页' : '点击查看个人主页';
-      tip.style.display = 'inline-flex';
-      tip.style.alignItems = 'center';
-    } else {
-      tip.innerHTML = i18n[currentLang].login;
-      tip.href = 'login.html';
-      tip.title = '';
-      tip.style.display = 'inline-flex';
-      tip.style.alignItems = 'center';
-    }
-  }
-
-  function applyLanguage(lang) {
-    const dict = i18n[lang] || i18n.wenyan;
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.dataset.i18n;
-      if (dict[key]) {
-        if (dict[key].includes('<br>') || dict[key].includes('<em>')) {
-          el.innerHTML = dict[key];
-        } else {
-          el.textContent = dict[key];
-        }
-      }
-    });
-    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-      const key = el.dataset.i18nPh;
-      if (dict[key]) el.placeholder = dict[key];
-    });
-  }
-
-  /* ============================================================
-     0.2 初始化执行
-     ============================================================ */
-  // 添加一个标记，只有 JS 成功加载并执行到这里，才会应用滚动动画的初始隐藏状态
-  html.classList.add('js-loaded');
-  
-  applyLanguage(currentLang);
-  renderLoginTip();
 
   /* ============================================================
      1. 音乐播放器
@@ -1522,12 +1250,12 @@ input[type=range]:focus { outline: none; }
 
   audioPlayer.addEventListener('play', () => {
     musicBtn.classList.add('playing');
-    musicText.textContent = currentLang === 'zhCN' ? '播放中' : '播放中';
+    musicText.textContent = '播放中';
   });
 
   audioPlayer.addEventListener('pause', () => {
     musicBtn.classList.remove('playing');
-    musicText.textContent = i18n[currentLang].music;
+    musicText.textContent = '音乐盒';
   });
 
   /* ============================================================
@@ -1538,6 +1266,7 @@ input[type=range]:focus { outline: none; }
   const LS_WALL_DATA = 'moju_wall_data';
   const LS_VID_VOL = 'moju_vid_vol';
   const LS_WALL_OPACITY = 'moju_wall_opacity';
+  const LS_LANG = 'moju_lang';
 
   const wallpaperDiv = document.getElementById('wallpaper');
   const wallpaperVideo = document.getElementById('wallpaperVideo');
@@ -1658,7 +1387,7 @@ input[type=range]:focus { outline: none; }
   restoreWallpaper();
 
   /* ============================================================
-     3. 语言切换
+     3. 语言
      ============================================================ */
   const btnLang = document.getElementById('btnLang');
   const langWin = document.getElementById('langWin');
@@ -1666,17 +1395,25 @@ input[type=range]:focus { outline: none; }
   btnLang.addEventListener('click', () => openWinElement(langWin));
 
   document.querySelectorAll('.lang-list li').forEach(li => {
-    li.classList.toggle('active', li.dataset.lang === currentLang);
     li.addEventListener('click', () => {
       document.querySelectorAll('.lang-list li').forEach(el => el.classList.remove('active'));
       li.classList.add('active');
-      currentLang = li.dataset.lang;
-      localStorage.setItem('moju_lang', currentLang);
-      applyLanguage(currentLang);
-      renderLoginTip(); // 语言切换后更新登录按钮
+      localStorage.setItem(LS_LANG, li.dataset.lang);
+      btnLang.textContent = '语言';
       closeWinElement(langWin);
     });
   });
+
+  const savedLang = localStorage.getItem(LS_LANG);
+  if (savedLang) {
+    document.querySelectorAll('.lang-list li').forEach(li => {
+      if (li.dataset.lang === savedLang) {
+        li.classList.add('active');
+      } else {
+        li.classList.remove('active');
+      }
+    });
+  }
 
   /* ============================================================
      4. 颜色代码表渲染
@@ -1711,34 +1448,25 @@ input[type=range]:focus { outline: none; }
   });
 
   /* ============================================================
-     5. 返回顶部 + 高级滚动淡入淡出 + 顶部栏阴影优化
+     5. 返回顶部 + 滑动淡入淡出
      ============================================================ */
   const backTop = document.getElementById('backTop');
-  const topbar = document.getElementById('topbar');
-  
   window.addEventListener('scroll', () => {
     backTop.classList.toggle('show', window.scrollY > 320);
-    topbar.classList.toggle('scrolled', window.scrollY > 10);
   }, { passive: true });
-  
   backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
   const fadeItems = document.querySelectorAll('.fade-item');
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
-      entries.forEach((en, index) => {
+      entries.forEach(en => {
         if (en.isIntersecting) {
-          en.target.style.transitionDelay = `${index * 80}ms`;
           en.target.classList.add('visible');
         } else {
-          en.target.style.transitionDelay = '0ms';
           en.target.classList.remove('visible');
         }
       });
-    }, { 
-      threshold: 0.1, 
-      rootMargin: "0px 0px -40px 0px" 
-    });
+    }, { threshold: 0.1 });
     fadeItems.forEach(el => io.observe(el));
   } else {
     fadeItems.forEach(el => el.classList.add('visible'));
@@ -1981,8 +1709,8 @@ input[type=range]:focus { outline: none; }
     a.href = url;
     a.target = '_blank';
     a.rel = 'noopener';
-    a.textContent = i18n[currentLang].frameBtn;
-    hint.appendChild(document.createTextNode(i18n[currentLang].frameHint));
+    a.textContent = '破窗而出 ↗';
+    hint.appendChild(document.createTextNode('若此处空无一物，乃该站闭门拒客 — '));
     hint.appendChild(a);
 
     win.appendChild(header);
@@ -2021,6 +1749,7 @@ input[type=range]:focus { outline: none; }
   document.getElementById('btnTimer').addEventListener('click', () => openWinElement(document.getElementById('timerWin')));
   document.getElementById('btnRouter').addEventListener('click', () => openWinElement(document.getElementById('routerWin')));
   
+  // 设备信息需要动态生成，点击时再触发
   document.getElementById('btnDevice').addEventListener('click', () => {
     updateDeviceInfo();
     openWinElement(document.getElementById('deviceWin'));
@@ -2050,7 +1779,7 @@ input[type=range]:focus { outline: none; }
         ta.remove();
       }
       const old = javaAddr.textContent;
-      javaAddr.textContent = currentLang === 'zhCN' ? '已复制 · ' : '已复制 · ' + text;
+      javaAddr.textContent = '已复制 · ' + text;
       setTimeout(() => { javaAddr.textContent = old; }, 1500);
     });
   }
@@ -2228,6 +1957,7 @@ input[type=range]:focus { outline: none; }
   const localVideoInput = document.getElementById('localVideoInput');
   let hlsInstance = null;
 
+  // 动态加载 hls.js 以便播放 m3u8
   const script = document.createElement('script');
   script.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest';
   document.head.appendChild(script);
@@ -2250,17 +1980,20 @@ input[type=range]:focus { outline: none; }
           m3u8Video.play().catch(() => {});
         });
       } else if (m3u8Video.canPlayType('application/vnd.apple.mpegurl')) {
+        // Safari 原生支持
         m3u8Video.src = url;
         m3u8Video.play().catch(() => {});
       } else {
         alert('此匣不识此物，未可呈映。');
       }
     } else {
+      // 直接当普通视频播放
       m3u8Video.src = url;
       m3u8Video.play().catch(() => {});
     }
   });
 
+  // 播放本地视频
   localVideoInput.addEventListener('change', function() {
     const file = this.files && this.files[0];
     if (!file || !file.type.startsWith('video/')) {
@@ -2276,12 +2009,12 @@ input[type=range]:focus { outline: none; }
     const fileURL = URL.createObjectURL(file);
     m3u8Video.src = fileURL;
     m3u8Video.play().catch(() => {});
-    m3u8Input.value = file.name; 
+    m3u8Input.value = file.name; // 将文件名显示在输入框
     this.value = '';
   });
 
   /* ============================================================
-     15. 个人主页逻辑
+     15. 个人主页逻辑 (包含头像)
      ============================================================ */
   const profileWin = document.getElementById('profileWin');
   const profName = document.getElementById('profName');
@@ -2294,7 +2027,10 @@ input[type=range]:focus { outline: none; }
   const avatarInput = document.getElementById('avatarInput');
   const profAvatar = document.getElementById('profAvatar');
 
-  let tempAvatarBase64 = null;
+  let currentUser = null;
+  let tempAvatarBase64 = null; // 暂存临时修改
+
+  try { currentUser = JSON.parse(localStorage.getItem('moju_current_user') || 'null'); } catch (e) {}
 
   function loadProfile() {
     if (!currentUser || !currentUser.name) return;
@@ -2324,6 +2060,7 @@ input[type=range]:focus { outline: none; }
     }
   }
 
+  // 头像点击触发上传
   avatarContainer.addEventListener('click', () => avatarInput.click());
   avatarInput.addEventListener('change', function() {
     const file = this.files && this.files[0];
@@ -2348,17 +2085,15 @@ input[type=range]:focus { outline: none; }
     };
     try {
       localStorage.setItem(profileKey, JSON.stringify(data));
-      alert(currentLang === 'zhCN' ? '资料已保存至本地' : '容貌与资料已存入囊中');
+      alert('容貌与资料已存入囊中');
     } catch (e) {
-      alert(currentLang === 'zhCN' ? '保存失败，图片可能过大' : '囊中羞涩，容纳不下此画像（文件过大）。');
+      alert('囊中羞涩，容纳不下此画像（文件过大）。');
     }
   });
 
   profLogoutBtn.addEventListener('click', () => {
-    if(confirm(currentLang === 'zhCN' ? '确认退出登录？' : '要散卷退出吗？')) {
-      localStorage.removeItem('moju_current_user');
-      window.location.reload();
-    }
+    localStorage.removeItem('moju_current_user');
+    window.location.reload();
   });
 
   document.getElementById('loginTip').addEventListener('click', (e) => {
@@ -2403,7 +2138,7 @@ input[type=range]:focus { outline: none; }
   });
 
   /* ============================================================
-     17. 漏刻计时
+     17. 漏刻计时 (倒计时版)
      ============================================================ */
   let timerInterval = null;
   let timerSecondsLeft = 0;
@@ -2429,26 +2164,29 @@ input[type=range]:focus { outline: none; }
     timerDisplay.textContent = formatTimeDisplay(timerSecondsLeft);
   }
 
+  // 输入框改变时同步
   timerMinInput.addEventListener('input', () => { if(!isTimerRunning) syncTimerInputs(); });
   timerSecInput.addEventListener('input', () => { if(!isTimerRunning) syncTimerInputs(); });
 
   timerStartBtn.addEventListener('click', () => {
     if (isTimerRunning) {
+      // 暂停
       clearInterval(timerInterval);
       isTimerRunning = false;
-      timerStartBtn.textContent = currentLang === 'zhCN' ? '继续' : '继续';
+      timerStartBtn.textContent = '继续';
       timerStartBtn.classList.remove('accent');
     } else {
+      // 如果未设置或归零，则读取输入框
       if (timerSecondsLeft <= 0) {
         syncTimerInputs();
         if (timerSecondsLeft <= 0) {
-          alert(currentLang === 'zhCN' ? '请设定有效时间' : '请设定有效的时间。');
+          alert('请设定有效的时间。');
           return;
         }
       }
       
       isTimerRunning = true;
-      timerStartBtn.textContent = currentLang === 'zhCN' ? '暂停' : '暂停';
+      timerStartBtn.textContent = '暂停';
       timerStartBtn.classList.add('accent');
       
       timerInterval = setInterval(() => {
@@ -2458,9 +2196,9 @@ input[type=range]:focus { outline: none; }
         } else {
           clearInterval(timerInterval);
           isTimerRunning = false;
-          timerStartBtn.textContent = i18n[currentLang].timerStart;
+          timerStartBtn.textContent = '开启';
           timerStartBtn.classList.remove('accent');
-          alert(currentLang === 'zhCN' ? '时间到！' : '滴答滴答，时辰已到。');
+          alert('滴答滴答，时辰已到。');
         }
       }, 1000);
     }
@@ -2469,17 +2207,15 @@ input[type=range]:focus { outline: none; }
   timerResetBtn.addEventListener('click', () => {
     clearInterval(timerInterval);
     isTimerRunning = false;
-    timerStartBtn.textContent = i18n[currentLang].timerStart;
+    timerStartBtn.textContent = '开启';
     timerStartBtn.classList.remove('accent');
-    timerSecondsLeft = 0;
-    timerMinInput.value = 0;
-    timerSecInput.value = 0;
-    timerDisplay.textContent = '00:00:00';
+    syncTimerInputs();
   });
 
   /* ============================================================
      18. 门庭洞开 (路由轮盘)
      ============================================================ */
+  // 第一段(192/10/172)，第二段(168/0/16)，第三段(1-9及其他)，第四段(1/254/255)
   const wheelStates = [
     { items: ['192', '10', '172'], idx: 0 },
     { items: ['168', '0', '16'], idx: 0 },
@@ -2517,7 +2253,7 @@ input[type=range]:focus { outline: none; }
     if (p3 === '其他') {
       p3 = document.getElementById('wheelOtherInput').value.trim();
       if (!p3 || isNaN(p3) || parseInt(p3) < 1 || parseInt(p3) > 255) {
-        alert(currentLang === 'zhCN' ? '请输入 1-255 的有效数字' : '请输入 1~255 之内的有效数。');
+        alert('请输入 1~255 之内的有效数。');
         return;
       }
     }
@@ -2525,7 +2261,7 @@ input[type=range]:focus { outline: none; }
     const ip = `${p1}.${p2}.${p3}.${p4}`;
     const url = 'http://' + ip;
     
-    openFrameWin(i18n[currentLang].routerTitle, url);
+    openFrameWin('门庭洞开 · 路由器', url);
     closeWinElement(document.getElementById('routerWin'));
   });
 
@@ -2534,7 +2270,7 @@ input[type=range]:focus { outline: none; }
      ============================================================ */
   async function updateDeviceInfo() {
     const body = document.getElementById('deviceInfoBody');
-    body.innerHTML = `<div style="font-size:13px;color:var(--ink-muted);text-align:center;padding:20px;">${currentLang === 'zhCN' ? '正在获取...' : '正在推演算理…'}</div>`;
+    body.innerHTML = '<div style="font-size:13px;color:var(--ink-muted);text-align:center;padding:20px;">正在推演算理…</div>';
 
     let osInfo = navigator.platform || '未知';
     let browser = '未知';
@@ -2543,6 +2279,7 @@ input[type=range]:focus { outline: none; }
     let ram = navigator.deviceMemory ? navigator.deviceMemory + ' GB' : '受限不可探';
     let storage = '未知';
 
+    // 1. 操作系统与版本判定
     const ua = navigator.userAgent;
     if (ua.indexOf('Windows NT 10.0') !== -1) {
       if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
@@ -2585,12 +2322,14 @@ input[type=range]:focus { outline: none; }
       osInfo = 'Linux';
     }
 
+    // 2. 浏览器判定
     if (ua.indexOf('Edg/') !== -1) browser = 'Edge';
     else if (ua.indexOf('Chrome/') !== -1) browser = 'Chrome';
     else if (ua.indexOf('Firefox/') !== -1) browser = 'Firefox';
     else if (ua.indexOf('Safari/') !== -1) browser = 'Safari';
     else browser = '未知/其他';
 
+    // 3. GPU 获取
     try {
       const canvas = document.createElement('canvas');
       const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
@@ -2602,6 +2341,7 @@ input[type=range]:focus { outline: none; }
       }
     } catch (e) {}
 
+    // 4. 存储配额估算
     if (navigator.storage && navigator.storage.estimate) {
       try {
         const estimate = await navigator.storage.estimate();
@@ -2609,18 +2349,51 @@ input[type=range]:focus { outline: none; }
       } catch (e) {}
     }
 
+    // 构建 UI
     body.innerHTML = `
-      <div class="device-row"><span>${currentLang === 'zhCN' ? '操作系统' : '宿主天演 (系统)'}</span><span>${osInfo}</span></div>
-      <div class="device-row"><span>${currentLang === 'zhCN' ? '浏览器' : '观览之器 (浏览器)'}</span><span>${browser}</span></div>
-      <div class="device-row"><span>${currentLang === 'zhCN' ? 'CPU 核心' : '算力之核 (CPU)'}</span><span>${cpuCores} 核</span></div>
-      <div class="device-row"><span>${currentLang === 'zhCN' ? '记忆体' : '记忆体'}</span><span>${ram}</span></div>
-      <div class="device-row"><span>${currentLang === 'zhCN' ? '硬盘空间' : '仓储 (硬盘空间)'}</span><span>${storage}</span></div>
+      <div class="device-row"><span>宿主天演 (系统)</span><span>${osInfo}</span></div>
+      <div class="device-row"><span>观览之器 (浏览器)</span><span>${browser}</span></div>
+      <div class="device-row"><span>算力之核 (CPU)</span><span>${cpuCores} 核</span></div>
+      <div class="device-row"><span>记忆体</span><span>${ram}</span></div>
+      <div class="device-row"><span>仓储 (硬盘空间)</span><span>${storage}</span></div>
       <div class="device-row" style="border-bottom:none; flex-direction:column; align-items:flex-start;">
-        <span style="margin-bottom:6px;">${currentLang === 'zhCN' ? 'GPU 显卡' : '绘景之芯 (GPU)'}</span>
+        <span style="margin-bottom:6px;">绘景之芯 (GPU)</span>
         <span style="max-width:100%; font-weight:400; font-size:12px; color:var(--ink-muted);">${gpu}</span>
       </div>
     `;
   }
+
+  /* ============================================================
+     20. 登录状态渲染
+     ============================================================ */
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+  }
+  function renderLoginTip() {
+    const tip = document.getElementById('loginTip');
+    if (currentUser && currentUser.name) {
+      let avatarUrl = '';
+      try {
+        const profileData = JSON.parse(localStorage.getItem('moju_user_profile_' + currentUser.name) || 'null');
+        if (profileData && profileData.avatar) {
+          avatarUrl = `<img src="${profileData.avatar}" style="width:20px; height:20px; border-radius:50%; object-fit:cover; margin-right:4px; vertical-align:middle; margin-top:-2px;">`;
+        }
+      } catch(e) {}
+      
+      tip.innerHTML = `${avatarUrl}入卷者 · <strong style="font-weight:500;">${escapeHtml(currentUser.name)}</strong>`;
+      tip.href = 'javascript:void(0)';
+      tip.title = '点击查看个人主页';
+      tip.style.display = 'inline-flex';
+      tip.style.alignItems = 'center';
+    } else {
+      tip.innerHTML = '入卷';
+      tip.href = 'login.html';
+      tip.title = '';
+      tip.style.display = 'inline-flex';
+      tip.style.alignItems = 'center';
+    }
+  }
+  renderLoginTip();
 
 })();
 </script>
